@@ -5,6 +5,6 @@ package com.peter.model;
  */
 public class GoodsEntryDTO {
 
-    public GoodsEntryDTO{}
+    public GoodsEntryDTO(){}
 }
 
