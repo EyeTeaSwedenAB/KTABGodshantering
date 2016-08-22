@@ -22,6 +22,7 @@ public class MainApp extends Application {
 
         stage.setScene(new Scene(mainWindow));
         stage.show();
+        int x = 2;
 
 
     }
