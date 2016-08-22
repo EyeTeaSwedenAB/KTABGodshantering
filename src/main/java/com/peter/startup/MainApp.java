@@ -16,14 +16,12 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader();
-        BorderPane mainWindow = loader.load(getClass().getResource("/fxml/MainWindow.fxml"));
         BorderPane inputWindow = loader.load(getClass().getResource("/fxml/InputWindow.fxml"));
+        BorderPane mainWindow = loader.load(getClass().getResource("/fxml/MainWindow.fxml"));
         mainWindow.setCenter(inputWindow);
 
         stage.setScene(new Scene(mainWindow));
         stage.show();
-        int x = 2;
-
 
     }
 }
