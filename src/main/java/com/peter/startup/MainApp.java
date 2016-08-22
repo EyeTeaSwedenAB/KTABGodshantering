@@ -16,10 +16,9 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader();
-        BorderPane inputWindow = loader.load(getClass().getResource("/fxml/InputWindow.fxml"));
         BorderPane mainWindow = loader.load(getClass().getResource("/fxml/MainWindow.fxml"));
-        mainWindow.setCenter(inputWindow);
-
+        BorderPane inputWindow = loader.load(getClass().getResource("/fxml/InputWindow.fxml"));
+        mainWindow.setBottom(inputWindow);
         stage.setScene(new Scene(mainWindow));
         stage.show();
 
