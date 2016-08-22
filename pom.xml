@@ -28,7 +28,7 @@
                 <version>1.5</version>
                 <configuration>
 
-                    <mainClass>com.peter.MainApp</mainClass>
+                    <mainClass>com.peter.startup.MainApp</mainClass>
 
                     <!-- only required if signing the jar file -->
                     <keyStoreAlias>example-user</keyStoreAlias>

@@ -1,4 +1,4 @@
-package com.peter;
+package com.peter.startup;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
