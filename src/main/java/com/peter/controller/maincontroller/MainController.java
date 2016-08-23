@@ -68,4 +68,8 @@ public class MainController {
         return databaseHandler != null;
     }
 
+    public String tjtj(){
+        return null;
+    }
+
 }
