@@ -1,14 +1,14 @@
-package com.peter.model.dto;
+package com.peter.model;
 
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class AccountDTO {
+public class Account {
 
     private int id;
     private String name;
 
-    public AccountDTO(int id, String name) {
+    public Account(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -30,20 +30,25 @@ public class AccountDTO {
     }
 
 
+
+    public String toFullName() {
+        return "ACCOUNT[id: " + id + ", name: " + name + "]";
+    }
+
     @Override
     public String toString() {
-        return "ACCOUNT[id: " + id + ", name: " + name + "]";
+        return name;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AccountDTO)) return false;
+        if (!(o instanceof Account)) return false;
 
-        AccountDTO accountDTO = (AccountDTO) o;
+        Account account = (Account) o;
 
-        if (id != accountDTO.id) return false;
-        return name != null ? name.equals(accountDTO.name) : accountDTO.name == null;
+        if (id != account.id) return false;
+        return name != null ? name.equals(account.name) : account.name == null;
 
     }
 

@@ -1,4 +1,4 @@
-package com.peter.model.integrationreqirements;
+package com.peter.integration.integrationreqirements;
 
 /**
  * Created by andreajacobsson on 2016-08-23.
