@@ -1,14 +1,15 @@
 package com.peter.controller.maincontroller;
 
-import com.peter.exceptions.DatabaseHandlerNotInitializedException;
-import com.peter.integration.DatabaseHandler;
-import com.peter.integration.DatabaseHandlerImpl;
-import com.peter.model.dto.AccountDTO;
-import com.peter.model.dto.GoodsCategotyDTO;
-import com.peter.model.dto.InvoiceRecieverDTO;
-import com.peter.model.integrationreqirements.Credentials;
+import com.peter.dto.AccountDTO;
+import com.peter.dto.GoodsCategoryDTO;
+import com.peter.dto.InvoiceRecieverDTO;
+import com.peter.integration.IntegrationLogicManager;
+import com.peter.model.Account;
+import com.peter.model.GoodsCategory;
+import com.peter.model.InvoiceReciever;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,60 +17,59 @@ import java.util.List;
  */
 public class MainController {
 
-    private DatabaseHandler databaseHandler = new DatabaseHandlerImpl();
+    private IntegrationLogicManager integrationLogicManager;
 
     public MainController() {
+
+        integrationLogicManager = new IntegrationLogicManager();
     }
 
-    public MainController(String userName, String password) {
-        databaseHandler.setCredentials(new Credentials(userName, password));
+    public MainController(String url, String userName, String password) {
+        integrationLogicManager = new IntegrationLogicManager();
+        integrationLogicManager.setLoginInformation(url, userName, password);
     }
 
-    public void setCredentials(String usename, String password) {
-        databaseHandler.setCredentials(new Credentials(usename, password));
+    public void setLoginInformation(String url, String userName, String password) {
+        integrationLogicManager.setLoginInformation(url, userName, password);
     }
 
 
-    public boolean testConnection() throws SQLException {
-        if (databaseInitialized())
-            return databaseHandler.testConnection();
-        else throw new DatabaseHandlerNotInitializedException("Current database is null");
-
+    public void testConnection() throws SQLException {
+        integrationLogicManager.testConnection();
     }
 
-    public List<AccountDTO> getAccounts() throws SQLException {
+    public List<AccountDTO> getAllAccounts() throws SQLException {
+        List<Account> accounts = integrationLogicManager.getAccounts();
+        List<AccountDTO> accountDTOs = new ArrayList<>();
 
-        if (databaseInitialized())
-            return databaseHandler.getAccounts();
-        else
-            throw new DatabaseHandlerNotInitializedException("Current database is null");
+        for (Account a : accounts)
+            accountDTOs.add(new AccountDTO(a.getId(), a.getName()));
+
+        return accountDTOs;
     }
 
-    public List<GoodsCategotyDTO> getAllGoodsCategories() throws SQLException {
-        if (databaseInitialized())
-            return databaseHandler.getGoodsCategories();
-        else
-            throw new DatabaseHandlerNotInitializedException("Current database is null");
+    public List<GoodsCategoryDTO> getAllGoodsCategories() throws SQLException {
+        List<GoodsCategory> goodsCategories = integrationLogicManager.getGoodsCategories();
+        List<GoodsCategoryDTO> goodsCategoryDTOs = new ArrayList<>();
+        for (GoodsCategory g : goodsCategories)
+            goodsCategoryDTOs.add(new GoodsCategoryDTO(g.getId(), g.getCategory(), g.getUnitPrice()));
+
+        return goodsCategoryDTOs;
     }
 
 
     public List<InvoiceRecieverDTO> getAllInvoiceRecievers() throws SQLException {
-        if (databaseInitialized())
-            return databaseHandler.getInvoiceRecievers();
+        List<InvoiceReciever> invoiceRecievers = integrationLogicManager.getInvoiceRecievers();
+        List<InvoiceRecieverDTO> invoiceRecieverDTOs = new ArrayList<>();
+        for (InvoiceReciever i : invoiceRecievers)
+            invoiceRecieverDTOs.add(new InvoiceRecieverDTO(i.getId(), i.getName(), i.getAdress(), i.getContact(), i.getPhone()));
 
-        else
-            throw new DatabaseHandlerNotInitializedException("Current database is null");
+        return invoiceRecieverDTOs;
+
     }
 
     // PRIVATE DOMAIN
     ///////////////////////////////////////////////////////////////////////////////
 
-    private boolean databaseInitialized() {
-        return databaseHandler != null;
-    }
-
-    public String tjtj(){
-        return null;
-    }
 
 }

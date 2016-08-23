@@ -1,9 +1,9 @@
-package com.peter.integration;
+package com.peter.integration.database;
 
-import com.peter.model.dto.AccountDTO;
-import com.peter.model.dto.GoodsCategotyDTO;
-import com.peter.model.dto.InvoiceRecieverDTO;
-import com.peter.model.integrationreqirements.Credentials;
+import com.peter.integration.integrationreqirements.Credentials;
+import com.peter.model.Account;
+import com.peter.model.GoodsCategory;
+import com.peter.model.InvoiceReciever;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class DatabaseHandlerImpl implements DatabaseHandler {
+class DatabaseHandlerImpl extends DatabaseHandler {
 
     private Connection globalConnection;
     private Statement globalStmt;
@@ -20,15 +20,17 @@ public class DatabaseHandlerImpl implements DatabaseHandler {
     private ResultSet globalResultSet;
 
     private Credentials credentials;
-    private String url = "jdbc:mysql://ktabtest.cyzgfcxn1ubh.eu-central-1.rds.amazonaws.com:3306/KTABGoodsTest";
+    private String url;
 
 
-    public DatabaseHandlerImpl() {
+    DatabaseHandlerImpl() {
     }
 
-    public DatabaseHandlerImpl(Credentials credentials) {
+    DatabaseHandlerImpl(String url, Credentials credentials) {
+        this.url = url;
         this.credentials = credentials;
     }
+
 
     @Override
     public void setUrl(String url) {
@@ -42,57 +44,51 @@ public class DatabaseHandlerImpl implements DatabaseHandler {
 
 
     @Override
-    public boolean testConnection() {
+    public void testConnection() throws SQLException {
 
-        try {
-            startGlobalConnection();
-            closeGlobalConnerction();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        startGlobalConnection();
+        closeGlobalConnerction();
     }
 
     @Override
-    public List<AccountDTO> getAccounts() throws SQLException {
+    public List<Account> getAccounts() throws SQLException {
 
-        List<AccountDTO> accountDTOs = new ArrayList<>();
+        List<Account> accounts = new ArrayList<>();
 
         startGlobalConnection();
         loadGlobalResultSetForTable(Table.ACCOUNTS);
 
         while (globalResultSet.next()) {
-            accountDTOs.add(new AccountDTO(globalResultSet.getInt("id"), globalResultSet.getString("name")));
+            accounts.add(new Account(globalResultSet.getInt("id"), globalResultSet.getString("name")));
         }
 
         closeGlobalConnerction();
-        return accountDTOs;
+        return accounts;
     }
 
     @Override
-    public List<InvoiceRecieverDTO> getInvoiceRecievers() throws SQLException {
-        List<InvoiceRecieverDTO> invoiceRecieverDTOs = new ArrayList<>();
+    public List<InvoiceReciever> getInvoiceRecievers() throws SQLException {
+        List<InvoiceReciever> invoiceRecievers = new ArrayList<>();
         startGlobalConnection();
         loadGlobalResultSetForTable(Table.INVOICE_RECIEVERS);
 
         while (globalResultSet.next())
-            invoiceRecieverDTOs.add(new InvoiceRecieverDTO(globalResultSet.getInt("id"), globalResultSet.getString("name"), globalResultSet.getString("adress"),
+            invoiceRecievers.add(new InvoiceReciever(globalResultSet.getInt("id"), globalResultSet.getString("name"), globalResultSet.getString("adress"),
                     globalResultSet.getString("contact"), globalResultSet.getString("phone")));
 
         closeGlobalConnerction();
-        return invoiceRecieverDTOs;
+        return invoiceRecievers;
     }
 
     @Override
-    public List<GoodsCategotyDTO> getGoodsCategories() throws SQLException {
+    public List<GoodsCategory> getGoodsCategories() throws SQLException {
 
-        List<GoodsCategotyDTO> goodsCategories = new ArrayList<>();
+        List<GoodsCategory> goodsCategories = new ArrayList<>();
         startGlobalConnection();
         loadGlobalResultSetForTable(Table.GOODS_CATEGORIES);
 
         while (globalResultSet.next()) {
-            goodsCategories.add(new GoodsCategotyDTO(globalResultSet.getInt("id"), globalResultSet.getString("category"), Double.parseDouble(globalResultSet.getString("unitprice"))));
+            goodsCategories.add(new GoodsCategory(globalResultSet.getInt("id"), globalResultSet.getString("category"), Double.parseDouble(globalResultSet.getString("unitprice"))));
         }
         closeGlobalConnerction();
         return goodsCategories;

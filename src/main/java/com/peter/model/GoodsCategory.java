@@ -1,15 +1,15 @@
-package com.peter.model.dto;
+package com.peter.model;
 
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class GoodsCategotyDTO {
+public class GoodsCategory {
 
     private int id;
     private String category;
     private double unitPrice;
 
-    public GoodsCategotyDTO(int id, String category, double unitPrice) {
+    public GoodsCategory(int id, String category, double unitPrice) {
         this.id = id;
         this.category = category;
         this.unitPrice = unitPrice;
@@ -40,17 +40,21 @@ public class GoodsCategotyDTO {
     }
 
 
+    public String toFullName() {
+        return "GOODSCATEGORY[id: "+ id + ", category: " + category + ", unitprice. " + unitPrice+"]";
+    }
+
     @Override
     public String toString() {
-        return "GOODSCATEGORY[id: "+ id + ", category: " + category + ", unitprice. " + unitPrice+"]";
+        return category;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GoodsCategotyDTO)) return false;
+        if (!(o instanceof GoodsCategory)) return false;
 
-        GoodsCategotyDTO that = (GoodsCategotyDTO) o;
+        GoodsCategory that = (GoodsCategory) o;
 
         if (id != that.id) return false;
         if (Double.compare(that.unitPrice, unitPrice) != 0) return false;

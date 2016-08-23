@@ -1,9 +1,9 @@
-package com.peter.integration;
+package com.peter.integration.database;
 
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public enum Table {
+enum Table {
 
     ACCOUNTS("accounts"),
     GOODS_CATEGORIES("goodscategories"),

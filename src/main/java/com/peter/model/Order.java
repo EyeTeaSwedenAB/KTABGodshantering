@@ -1,11 +1,11 @@
-package com.peter.model.dto;
+package com.peter.model;
 
 import java.time.LocalDate;
 
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class OrderDTO {
+public class Order {
 
     private int id;
     private LocalDate date;
@@ -16,7 +16,7 @@ public class OrderDTO {
     private double totalPrice;
 
 
-    public OrderDTO(int id, LocalDate date, int invoiceRecieverId, int accountId, int goodsCategoryId, int noOfUnits, double totalPrice) {
+    public Order(int id, LocalDate date, int invoiceRecieverId, int accountId, int goodsCategoryId, int noOfUnits, double totalPrice) {
         this.id = id;
         this.date = date;
         this.invoiceRecieverId = invoiceRecieverId;
@@ -82,12 +82,13 @@ public class OrderDTO {
         this.totalPrice = totalPrice;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OrderDTO)) return false;
+        if (!(o instanceof Order)) return false;
 
-        OrderDTO orderDTO = (OrderDTO) o;
+        Order orderDTO = (Order) o;
 
         if (id != orderDTO.id) return false;
         if (invoiceRecieverId != orderDTO.invoiceRecieverId) return false;

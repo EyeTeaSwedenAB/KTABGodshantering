@@ -1,9 +1,9 @@
-package com.peter.model.dto;
+package com.peter.model;
 
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class InvoiceRecieverDTO {
+public class InvoiceReciever {
 
     private int id;
     private String name;
@@ -11,7 +11,8 @@ public class InvoiceRecieverDTO {
     private String contact;
     private String phone;
 
-    public InvoiceRecieverDTO(int id, String name, String adress, String contact, String phone) {
+
+    public InvoiceReciever(int id, String name, String adress, String contact, String phone) {
         this.id = id;
         this.name = name;
         this.adress = adress;
@@ -60,18 +61,23 @@ public class InvoiceRecieverDTO {
     }
 
 
-    @Override
-    public String toString() {
+    public String toFullName() {
         return "INVOICERECIEVER[id: " + id + ", name: " + name + ", adress: " + adress + ", contact: " + contact
                 + ", phone: " + phone + "]";
+    }
+
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InvoiceRecieverDTO)) return false;
+        if (!(o instanceof InvoiceReciever)) return false;
 
-        InvoiceRecieverDTO that = (InvoiceRecieverDTO) o;
+        InvoiceReciever that = (InvoiceReciever) o;
 
         if (id != that.id) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
