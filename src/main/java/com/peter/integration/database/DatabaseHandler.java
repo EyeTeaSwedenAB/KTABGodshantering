@@ -1,6 +1,6 @@
 package com.peter.integration.database;
 
-import com.peter.integration.integrationreqirements.Credentials;
+import com.peter.integration.integrationrequirements.Credentials;
 import com.peter.model.Account;
 import com.peter.model.GoodsCategory;
 import com.peter.model.InvoiceReciever;
