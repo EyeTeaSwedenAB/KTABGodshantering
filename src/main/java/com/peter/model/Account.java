@@ -1,12 +1,16 @@
 package com.peter.model;
 
+import java.io.Serializable;
+
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class Account {
+public class Account implements Serializable{
 
     private int id;
     private String name;
+
+    public Account(){}
 
     public Account(int id, String name) {
         this.id = id;

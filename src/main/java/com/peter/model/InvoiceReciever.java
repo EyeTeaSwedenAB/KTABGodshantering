@@ -1,15 +1,19 @@
 package com.peter.model;
 
+import java.io.Serializable;
+
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class InvoiceReciever {
+public class InvoiceReciever implements Serializable{
 
     private int id;
     private String name;
     private String adress;
     private String contact;
     private String phone;
+
+    public InvoiceReciever(){}
 
 
     public InvoiceReciever(int id, String name, String adress, String contact, String phone) {
@@ -62,7 +66,7 @@ public class InvoiceReciever {
 
 
     public String toFullName() {
-        return "INVOICERECIEVER[id: " + id + ", name: " + name + ", adress: " + adress + ", contact: " + contact
+        return "INVOICERECIEVER[id: " + id +  ", name: " + name + ", adress: " + adress + ", contact: " + contact
                 + ", phone: " + phone + "]";
     }
 

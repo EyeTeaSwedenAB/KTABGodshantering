@@ -1,13 +1,19 @@
 package com.peter.model;
 
+import java.io.Serializable;
+
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class GoodsCategory {
+public class GoodsCategory implements Serializable{
+
+
 
     private int id;
     private String category;
     private double unitPrice;
+
+    public GoodsCategory(){}
 
     public GoodsCategory(int id, String category, double unitPrice) {
         this.id = id;

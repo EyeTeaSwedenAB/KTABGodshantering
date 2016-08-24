@@ -1,4 +1,4 @@
-package com.peter.dto;
+package com.peter.dtos;
 
 /**
  * Created by andreajacobsson on 2016-08-23.

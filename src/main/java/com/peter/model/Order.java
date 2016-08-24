@@ -1,11 +1,12 @@
 package com.peter.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class Order {
+public class Order implements Serializable{
 
     private int id;
     private LocalDate date;
@@ -14,6 +15,8 @@ public class Order {
     private int goodsCategoryId;
     private int noOfUnits;
     private double totalPrice;
+
+    public Order(){}
 
 
     public Order(int id, LocalDate date, int invoiceRecieverId, int accountId, int goodsCategoryId, int noOfUnits, double totalPrice) {

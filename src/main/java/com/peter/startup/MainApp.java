@@ -1,5 +1,8 @@
 package com.peter.startup;
 
+import com.peter.controller.maincontroller.MainController;
+import com.peter.controller.viewcontroller.InputViewController;
+import com.sun.glass.ui.MenuItem;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,11 +18,23 @@ public class MainApp extends Application {
 
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader loader = new FXMLLoader();
-        BorderPane mainWindow = loader.load(getClass().getResource("/fxml/MainWindow.fxml"));
-        BorderPane inputWindow = loader.load(getClass().getResource("/fxml/InputWindow.fxml"));
-        mainWindow.setBottom(inputWindow);
-        stage.setScene(new Scene(mainWindow));
+        FXMLLoader mainViewLoader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        BorderPane mainView = mainViewLoader.load();
+
+        FXMLLoader inputViewLoader = new FXMLLoader(getClass().getResource("/fxml/InputView.fxml"));
+        BorderPane inputView = inputViewLoader.load();
+        InputViewController ivc = inputViewLoader.getController();
+
+        MainController mainController = new MainController();
+        mainController.setLoginInformation("jdbc:mysql://ktabtest.cyzgfcxn1ubh.eu-central-1.rds.amazonaws.com:3306/KTABGoodsTest", "pebo0602", "PetBob82");
+
+        ivc.setMainController(mainController);
+        ivc.init();
+
+
+
+        mainView.setBottom(inputView);
+        stage.setScene(new Scene(mainView));
         stage.show();
 
     }

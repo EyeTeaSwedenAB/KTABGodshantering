@@ -1,8 +1,8 @@
 package com.peter.controller.maincontroller;
 
-import com.peter.dto.AccountDTO;
-import com.peter.dto.GoodsCategoryDTO;
-import com.peter.dto.InvoiceRecieverDTO;
+import com.peter.dtos.AccountDTO;
+import com.peter.dtos.GoodsCategoryDTO;
+import com.peter.dtos.InvoiceRecieverDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,11 +53,6 @@ public class MainControllerTest {
     public void getAllAccounts() {
         try {
             List<AccountDTO> accountDTOs = mainController.getAllAccounts();
-            System.out.println("-----------AccountDTOS--------------------");
-            for (AccountDTO a : accountDTOs)
-                System.out.println(a);
-            System.out.println("------------------------------------------");
-            System.out.println();
 
             assertNotEquals(0, accountDTOs.size());
 
@@ -72,11 +67,6 @@ public class MainControllerTest {
 
         try {
             List<GoodsCategoryDTO> goodsCatDTOs = mainController.getAllGoodsCategories();
-            System.out.println("-----------GoodsCategoryDTOS--------------------");
-            for (GoodsCategoryDTO g : goodsCatDTOs)
-                System.out.println(g);
-            System.out.println("------------------------------------------");
-            System.out.println();
 
             assertNotEquals(0, goodsCatDTOs.size());
 
@@ -91,11 +81,6 @@ public class MainControllerTest {
 
         try {
             List<InvoiceRecieverDTO> invoiceDTOS = mainController.getAllInvoiceRecievers();
-            System.out.println("-----------InviceReciverDTOS--------------------");
-            for (InvoiceRecieverDTO i : invoiceDTOS)
-                System.out.println(i);
-            System.out.println("------------------------------------------");
-            System.out.println();
 
             assertNotEquals(0, invoiceDTOS.size());
 
