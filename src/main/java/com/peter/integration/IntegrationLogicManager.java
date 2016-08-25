@@ -83,7 +83,7 @@ public class IntegrationLogicManager {
 
         for (RawOrderDataDTO rawOrderDataDTO : rawOrderDataDTOs) {
 
-            TransformedOrderDataDTO transformedOrderDataDTO = convertRawOrderDataDTO(rawOrderDataDTO);
+            TransformedOrderDataDTO transformedOrderDataDTO = convertToTransfomedOrderData(rawOrderDataDTO);
             transformedOrderDataDTOs.add(transformedOrderDataDTO);
         }
 
@@ -96,7 +96,7 @@ public class IntegrationLogicManager {
 
     public int sendNewEntry(TransformedOrderDataDTO transformedOrderDataDTO) throws SQLException {
 
-        RawOrderDataDTO rawOrderDataDTO = convertTransformedOrderDataDTO(transformedOrderDataDTO);
+        RawOrderDataDTO rawOrderDataDTO = convertToRawOrderData(transformedOrderDataDTO);
         return databaseHandler.sendNewEntry(rawOrderDataDTO);
     }
 
@@ -105,7 +105,7 @@ public class IntegrationLogicManager {
     ////////////////////////////////////////////////////////////////////////////////////
 
 
-    private TransformedOrderDataDTO convertRawOrderDataDTO(RawOrderDataDTO rawOrderDataDTO) {
+    private TransformedOrderDataDTO convertToTransfomedOrderData(RawOrderDataDTO rawOrderDataDTO) {
 
         int id = rawOrderDataDTO.ID;
         LocalDate date = LocalDate.parse(rawOrderDataDTO.DATE);
@@ -122,7 +122,7 @@ public class IntegrationLogicManager {
         return transformedDTO;
     }
 
-    private RawOrderDataDTO convertTransformedOrderDataDTO(TransformedOrderDataDTO transformedOrderDataDTO) {
+    private RawOrderDataDTO convertToRawOrderData(TransformedOrderDataDTO transformedOrderDataDTO) {
         int ignoreID = 0;
         String date = transformedOrderDataDTO.getDate().toString();
         int invoiceRecieverId = transformedOrderDataDTO.getInvoiceReciever().ID;
