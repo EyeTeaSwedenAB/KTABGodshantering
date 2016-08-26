@@ -1,25 +1,23 @@
 package com.peter.model;
 
-import java.io.Serializable;
-
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-public class InvoiceReciever implements Serializable{
+public class InvoiceReciever {
 
     private int id;
-    private String name;
-    private String adress;
+    private String company;
+    private String address;
     private String contact;
     private String phone;
 
-    public InvoiceReciever(){}
+    public InvoiceReciever() {
+    }
 
-
-    public InvoiceReciever(int id, String name, String adress, String contact, String phone) {
+    public InvoiceReciever(int id, String company, String address, String contact, String phone) {
         this.id = id;
-        this.name = name;
-        this.adress = adress;
+        this.company = company;
+        this.address = address;
         this.contact = contact;
         this.phone = phone;
     }
@@ -32,20 +30,20 @@ public class InvoiceReciever implements Serializable{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCompany() {
+        return company;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompany(String company) {
+        this.company = company;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getContact() {
@@ -64,40 +62,8 @@ public class InvoiceReciever implements Serializable{
         this.phone = phone;
     }
 
-
-    public String toFullName() {
-        return "INVOICERECIEVER[id: " + id +  ", name: " + name + ", adress: " + adress + ", contact: " + contact
-                + ", phone: " + phone + "]";
-    }
-
-
     @Override
     public String toString() {
-        return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof InvoiceReciever)) return false;
-
-        InvoiceReciever that = (InvoiceReciever) o;
-
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (adress != null ? !adress.equals(that.adress) : that.adress != null) return false;
-        if (contact != null ? !contact.equals(that.contact) : that.contact != null) return false;
-        return phone != null ? phone.equals(that.phone) : that.phone == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (adress != null ? adress.hashCode() : 0);
-        result = 31 * result + (contact != null ? contact.hashCode() : 0);
-        result = 31 * result + (phone != null ? phone.hashCode() : 0);
-        return result;
+        return company;
     }
 }

@@ -9,14 +9,17 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Light.Distant?>
+<?import javafx.scene.effect.Lighting?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.peter.controller.viewcontroller.InputViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.peter.controller.viewcontroller.InputViewController">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -28,6 +31,7 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -36,29 +40,43 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <DatePicker fx:id="datePicker" prefWidth="170.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="invoiceRecieverCombobox" prefHeight="26.0" prefWidth="170.0" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                        <DatePicker fx:id="datePicker" prefWidth="160.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="invoiceRecieverCombobox" prefWidth="160.0" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin></ComboBox>
-                        <ComboBox fx:id="goodsCategoryComboBox" prefWidth="170.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-                        <Spinner fx:id="noOfUnitsSpinner" prefWidth="170.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-                        <TextField fx:id="unitPriceTextField" prefWidth="170.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="goodsCategoryComboBox" prefWidth="160.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                        <Spinner fx:id="noOfUnitsSpinner" prefWidth="160.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                        <TextField fx:id="unitPriceTextField" maxWidth="160.0" minWidth="160.0" prefWidth="156.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
                         <Label text="Välj datum" GridPane.halignment="CENTER" />
                         <Label text="Fakturamottagare" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                         <Label text="Godstyp" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                         <Label text="Antal" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                         <Label text="Á pris" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                         <Label fx:id="totalPriceLabel" text="0.00" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="accountsCombobox" prefWidth="170.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="accountsCombobox" prefWidth="160.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
                   <Label text="Destination" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                   <Label text="TOTAL" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                  <Label text="Kommentar" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                  <TextField fx:id="commentsTextField" maxWidth="160.0" minWidth="160.0" prefWidth="40.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
             <HBox prefHeight="60.0" prefWidth="1100.0" spacing="30.0">
                <children>
                   <Button fx:id="sendButton" mnemonicParsing="false" onAction="#handleSendButtonClicked" text="Skicka" />
-                  <Button fx:id="undoButton" mnemonicParsing="false" text="Ångra" />
+                  <Button fx:id="undoButton" mnemonicParsing="false" onAction="#handleUndoButtonClicked" text="Ångra" />
+                  <Label fx:id="infoLabel" textFill="#ee1111">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <effect>
+                        <Lighting bumpInput="$null" diffuseConstant="1.48" specularConstant="0.99">
+                           <light>
+                              <Light.Distant color="#d30000" />
+                           </light>
+                        </Lighting>
+                     </effect>
+                  </Label>
                </children>
                <padding>
                   <Insets left="20.0" top="18.0" />
@@ -70,13 +88,14 @@
     <center>
         <TableView fx:id="tableView" prefWidth="1100.0" BorderPane.alignment="CENTER">
             <columns>
-                <TableColumn fx:id="dateColumn" prefWidth="200.0" text="Datum" />
+                <TableColumn fx:id="dateColumn" prefWidth="160.0" text="Datum" />
                 <TableColumn fx:id="invoiceRecieverColumn" prefWidth="200.0" text="Fakturamottagare" />
             <TableColumn fx:id="destinationColumn" prefWidth="200.0" text="Destination" />
                 <TableColumn fx:id="goodsCategoryColumn" prefWidth="200.0" text="Godstyp" />
-                <TableColumn fx:id="noOfUnitsColumn" prefWidth="100.0" text="Antal" />
-                <TableColumn fx:id="unitPriceColumn" minWidth="0.0" prefWidth="100.0" text="Á pris" />
-                <TableColumn fx:id="totalPriceColumn" prefWidth="100.0" text="Total" />
+                <TableColumn fx:id="noOfUnitsColumn" text="Antal" />
+                <TableColumn fx:id="unitPriceColumn" minWidth="0.0" text="Á pris" />
+                <TableColumn fx:id="totalPriceColumn" text="Total" />
+            <TableColumn fx:id="commentsColumn" prefWidth="200.0" text="Kommentar" />
             </columns>
             <BorderPane.margin>
                 <Insets />

@@ -1,12 +1,10 @@
 package com.peter.controller.maincontroller;
 
-import com.peter.dtos.AccountDTO;
-import com.peter.dtos.GoodsCategoryDTO;
-import com.peter.dtos.InvoiceRecieverDTO;
-import com.peter.dtos.TransformedOrderDataDTO;
+import com.peter.dto.OrderDTO;
 import com.peter.integration.IntegrationLogicManager;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -35,35 +33,47 @@ public class MainController {
         integrationLogicManager.testConnection();
     }
 
-    public List<AccountDTO> getAllAccounts() throws SQLException {
-        List<AccountDTO> accountDTOs = integrationLogicManager.getAllAccounts();
+    public List<String> getAllAccounts() throws SQLException {
+        List<String> accountsAsStrings = integrationLogicManager.getAllAccounts();
 
-        return accountDTOs;
+        return accountsAsStrings;
     }
 
-    public List<GoodsCategoryDTO> getAllGoodsCategories() throws SQLException {
+    public List<String> getAllGoodsCategories() throws SQLException {
 
-        List<GoodsCategoryDTO> goodsCategoriDTOs = integrationLogicManager.getAllGoodsCategories();
+        List<String> goodsCategoryAsStrings = integrationLogicManager.getAllGoodsCategories();
 
-
-        return goodsCategoriDTOs;
-    }
-
-
-    public List<InvoiceRecieverDTO> getAllInvoiceRecievers() throws SQLException {
-        List<InvoiceRecieverDTO> invoiceRecieverDTOs = integrationLogicManager.getAllInvoiceRecievers();
-
-        return invoiceRecieverDTOs;
-
+        return goodsCategoryAsStrings;
     }
 
 
-    public int sendNewEntry(TransformedOrderDataDTO orderEntryDTO) throws SQLException {
+    public List<String> getAllInvoiceRecievers() throws SQLException {
+        List<String> invoiceRecieversAsStrings = integrationLogicManager.getAllInvoiceRecievers();
+
+        return invoiceRecieversAsStrings;
+
+    }
+
+
+    public int sendNewEntry(OrderDTO orderEntryDTO) throws SQLException {
         return integrationLogicManager.sendNewEntry(orderEntryDTO);
     }
 
-    public List<TransformedOrderDataDTO> getEntries(int limit) throws SQLException {
-        return integrationLogicManager.getTransformedOrders(limit);
+    public List<OrderDTO> getOrders(int limit) throws SQLException {
+        return integrationLogicManager.getOrders(limit);
+    }
+
+    public List<OrderDTO> getOrders(LocalDate localDate) throws SQLException {
+        return integrationLogicManager.getOrders(localDate);
+    }
+
+    public double getUnitPrice(String goodsCategory) {
+
+        return integrationLogicManager.getUnitPrice(goodsCategory);
+    }
+
+    public int deleteLastEntry() throws SQLException {
+        return integrationLogicManager.deleteLastEntry();
     }
 
 

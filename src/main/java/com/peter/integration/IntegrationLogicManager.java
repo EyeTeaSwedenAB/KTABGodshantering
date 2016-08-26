@@ -1,8 +1,9 @@
 package com.peter.integration;
 
-import com.peter.dtos.*;
+import com.peter.dto.OrderDTO;
 import com.peter.integration.database.DatabaseHandler;
 import com.peter.integration.integrationrequirements.Credentials;
+import com.peter.model.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -18,11 +19,16 @@ public class IntegrationLogicManager {
 
     private DatabaseHandler databaseHandler;
 
-    private Map<Integer, AccountDTO> accountsMap = new HashMap<>();
-    private Map<Integer, GoodsCategoryDTO> goodsCategoriesMap = new HashMap<>();
-    private Map<Integer, InvoiceRecieverDTO> invoiceRecieversMap = new HashMap<>();
+    private Map<String, Account> nameToAccountMap = new HashMap<>();
+    private Map<String, GoodsCategory> nameToGoodsCategoryMap = new HashMap<>();
+    private Map<String, InvoiceReciever> nameToInvoiceRecieverMap = new HashMap<>();
 
-    private List<TransformedOrderDataDTO> transformedOrderDataDTOs = new ArrayList<>();
+    private Map<Account, Integer> accountToIdMap = new HashMap<>();
+    private Map<GoodsCategory, Integer> goodsCategoryToIdMap = new HashMap<>();
+    private Map<InvoiceReciever, Integer> invoiceRecieverToIdMap = new HashMap<>();
+
+
+    private List<OrderDTO> orderDTOs = new ArrayList<>();
 
     public IntegrationLogicManager() {
         databaseHandler = DatabaseHandler.getNewInstance();
@@ -38,100 +44,111 @@ public class IntegrationLogicManager {
     }
 
 
-    public List<AccountDTO> getAllAccounts() throws SQLException {
-
-        accountsMap.clear();
-        List<AccountDTO> accountDTOs = databaseHandler.getAllAccounts();
-
-        for (AccountDTO accountDTO : accountDTOs)
-            accountsMap.put(accountDTO.ID, accountDTO);
-
-        return accountDTOs;
-    }
-
-
-    public List<GoodsCategoryDTO> getAllGoodsCategories() throws SQLException {
-
-        goodsCategoriesMap.clear();
-        List<GoodsCategoryDTO> goodsCategoryDTOs = databaseHandler.getAllGoodsCategories();
-
-        for (GoodsCategoryDTO goodsCategoryDTO : goodsCategoryDTOs)
-            goodsCategoriesMap.put(goodsCategoryDTO.ID, goodsCategoryDTO);
-
-        return goodsCategoryDTOs;
-    }
-
-
-    public List<InvoiceRecieverDTO> getAllInvoiceRecievers() throws SQLException {
-
-        invoiceRecieversMap.clear();
-        List<InvoiceRecieverDTO> invoiceRecieverDTOs = databaseHandler.getAllInvoiceRecievers();
-
-        for (InvoiceRecieverDTO invoiceRecieverDTO : invoiceRecieverDTOs)
-            invoiceRecieversMap.put(invoiceRecieverDTO.ID, invoiceRecieverDTO);
-
-        return invoiceRecieverDTOs;
-    }
-
-
-    public List<TransformedOrderDataDTO> getTransformedOrders(int limit) throws SQLException {
-
-        transformedOrderDataDTOs.clear();
-        List<RawOrderDataDTO> rawOrderDataDTOs = databaseHandler.fetchRawOrderData(limit);
-
-        // Construct list of orders
-
-        for (RawOrderDataDTO rawOrderDataDTO : rawOrderDataDTOs) {
-
-            TransformedOrderDataDTO transformedOrderDataDTO = convertToTransfomedOrderData(rawOrderDataDTO);
-            transformedOrderDataDTOs.add(transformedOrderDataDTO);
-        }
-
-        return transformedOrderDataDTOs;
-    }
-
     public void testConnection() throws SQLException {
         databaseHandler.testConnection();
     }
 
-    public int sendNewEntry(TransformedOrderDataDTO transformedOrderDataDTO) throws SQLException {
 
-        RawOrderDataDTO rawOrderDataDTO = convertToRawOrderData(transformedOrderDataDTO);
-        return databaseHandler.sendNewEntry(rawOrderDataDTO);
+    public List<String> getAllAccounts() throws SQLException {
+
+        nameToAccountMap.clear();
+        accountToIdMap.clear();
+
+        List<Account> accounts = databaseHandler.getAllAccounts();
+        List<String> accountsAsString = new ArrayList<>();
+
+        for (Account account : accounts){
+            nameToAccountMap.put(account.getAccountName(), account);
+            accountToIdMap.put(account, account.getId());
+            accountsAsString.add(account.getAccountName());
+        }
+
+        return accountsAsString;
+    }
+
+
+    public List<String> getAllGoodsCategories() throws SQLException {
+
+        nameToGoodsCategoryMap.clear();
+        accountToIdMap.clear();
+
+        List<GoodsCategory> goodsCategories = databaseHandler.getAllGoodsCategories();
+        List<String> goodsCategoryAsString = new ArrayList<>();
+
+        for (GoodsCategory goodsCategory : goodsCategories) {
+            nameToGoodsCategoryMap.put(goodsCategory.getCategory(), goodsCategory);
+            goodsCategoryToIdMap.put(goodsCategory, goodsCategory.getId());
+            goodsCategoryAsString.add(goodsCategory.getCategory());
+        }
+
+        return goodsCategoryAsString;
+    }
+
+
+    public List<String> getAllInvoiceRecievers() throws SQLException {
+
+        nameToInvoiceRecieverMap.clear();
+        List<InvoiceReciever> invoiceRecievers = databaseHandler.getAllInvoiceRecievers();
+        List<String> invoiceRecieversAsStrings = new ArrayList<>();
+
+        for (InvoiceReciever invoiceReciever : invoiceRecievers){
+            nameToInvoiceRecieverMap.put(invoiceReciever.getCompany(), invoiceReciever);
+            invoiceRecieverToIdMap.put(invoiceReciever, invoiceReciever.getId());
+            invoiceRecieversAsStrings.add(invoiceReciever.getCompany());
+
+        }
+
+        return invoiceRecieversAsStrings;
+    }
+
+    public List<OrderDTO> getOrders(int limit) throws SQLException {
+
+        List<OrderDTO> orderDTOs = databaseHandler.fetchOrders(limit);
+        // Construct list of orders
+        return orderDTOs;
+    }
+
+    public List<OrderDTO> getOrders(LocalDate localDate) throws SQLException {
+
+        List<OrderDTO> orderDTOs = databaseHandler.fetchOrders(localDate.toString());
+        return orderDTOs;
+    }
+
+
+    public int sendNewEntry(OrderDTO orderDTO) throws SQLException {
+
+        RawOrderData rawOrderData = convertToRawOrderData(orderDTO);
+        return databaseHandler.sendNewEntry(rawOrderData);
+    }
+
+
+    public double getUnitPrice(String goodsCategory) {
+
+        GoodsCategory g = nameToGoodsCategoryMap.get(goodsCategory);
+        if (g == null)
+            return  -1;
+        return g.getUnitPrice();
+    }
+
+    public int deleteLastEntry() throws SQLException {
+        return databaseHandler.deleteLastEntry();
     }
 
 
     // Private Domain
     ////////////////////////////////////////////////////////////////////////////////////
 
+    private RawOrderData convertToRawOrderData(OrderDTO orderDTO) {
 
-    private TransformedOrderDataDTO convertToTransfomedOrderData(RawOrderDataDTO rawOrderDataDTO) {
+        String date = orderDTO.getDate();
+        int invoiceID = nameToInvoiceRecieverMap.get(orderDTO.getInvoiceReciever()).getId();
+        int accountID = nameToAccountMap.get(orderDTO.getDestination()).getId();
+        int goodsCatID = nameToGoodsCategoryMap.get(orderDTO.getGoodsCategory()).getId();
+        int noOfUnits = orderDTO.getNoOfUnits();
+        double totalPrice = orderDTO.getTotalPrice();
+        String comment = orderDTO.getComment();
 
-        int id = rawOrderDataDTO.ID;
-        LocalDate date = LocalDate.parse(rawOrderDataDTO.DATE);
-        InvoiceRecieverDTO invoiceReciever = invoiceRecieversMap.get(rawOrderDataDTO.INVOICE_RECIEVER_ID);
-        AccountDTO account = accountsMap.get(rawOrderDataDTO.ACCOUNT_ID);
-        GoodsCategoryDTO goodsCategory = goodsCategoriesMap.get(rawOrderDataDTO.GOODS_CATEGORY_ID);
-        int noOfUnits = rawOrderDataDTO.NO_OF_UNITS;
-        double unitPrice = goodsCategory.UNIT_PRICE;
-        double totalPrice = noOfUnits * unitPrice;
+        return new RawOrderData(0, date, invoiceID, accountID, goodsCatID, noOfUnits, totalPrice, comment);
 
-        TransformedOrderDataDTO transformedDTO = new TransformedOrderDataDTO(date, invoiceReciever, account, goodsCategory,
-                noOfUnits, unitPrice, totalPrice);
-
-        return transformedDTO;
-    }
-
-    private RawOrderDataDTO convertToRawOrderData(TransformedOrderDataDTO transformedOrderDataDTO) {
-        int ignoreID = 0;
-        String date = transformedOrderDataDTO.getDate().toString();
-        int invoiceRecieverId = transformedOrderDataDTO.getInvoiceReciever().ID;
-        int accpountID = transformedOrderDataDTO.getDestination().ID;
-        int goodsCategoryId = transformedOrderDataDTO.getGoodsCategory().ID;
-        int noOfUnits = transformedOrderDataDTO.getNoOfUnits();
-        double totalPrice = transformedOrderDataDTO.getTotalPrice();
-
-        RawOrderDataDTO raworderData = new RawOrderDataDTO(ignoreID, date, invoiceRecieverId, accpountID, goodsCategoryId, noOfUnits, totalPrice);
-        return raworderData;
     }
 }

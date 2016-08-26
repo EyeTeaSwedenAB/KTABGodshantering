@@ -1,10 +1,9 @@
 package com.peter.controller.viewcontroller;
 
 import com.peter.controller.maincontroller.MainController;
-import com.peter.dtos.AccountDTO;
-import com.peter.dtos.GoodsCategoryDTO;
-import com.peter.dtos.InvoiceRecieverDTO;
-import com.peter.dtos.TransformedOrderDataDTO;
+import com.peter.dto.OrderDTO;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -12,7 +11,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,18 +18,17 @@ import java.util.List;
  */
 public class InputViewController {
 
-
     @FXML
     private DatePicker datePicker;
 
     @FXML
-    private ComboBox<InvoiceRecieverDTO> invoiceRecieverCombobox;
+    private ComboBox<String> invoiceRecieverCombobox;
 
     @FXML
-    private ComboBox<AccountDTO> accountsCombobox;
+    private ComboBox<String> accountsCombobox;
 
     @FXML
-    private ComboBox<GoodsCategoryDTO> goodsCategoryComboBox;
+    private ComboBox<String> goodsCategoryComboBox;
 
     @FXML
     private Spinner<Integer> noOfUnitsSpinner;
@@ -43,31 +40,51 @@ public class InputViewController {
     private Label totalPriceLabel;
 
     @FXML
-    private TableView<TransformedOrderDataDTO> tableView;
+    private TextField commentsTextField;
 
     @FXML
-    private TableColumn<TransformedOrderDataDTO, Date> dateColumn;
+    private TableView<OrderDTO> tableView;
 
     @FXML
-    private TableColumn<TransformedOrderDataDTO, InvoiceRecieverDTO> invoiceRecieverColumn;
+    private TableColumn<OrderDTO, String> dateColumn;
 
     @FXML
-    private TableColumn<TransformedOrderDataDTO, AccountDTO> destinationColumn;
+    private TableColumn<OrderDTO, String> invoiceRecieverColumn;
 
     @FXML
-    private TableColumn<TransformedOrderDataDTO, GoodsCategoryDTO> goodsCategoryColumn;
+    private TableColumn<OrderDTO, String> destinationColumn;
 
     @FXML
-    private TableColumn<TransformedOrderDataDTO, Integer> noOfUnitsColumn;
+    private TableColumn<OrderDTO, String> goodsCategoryColumn;
 
     @FXML
-    private TableColumn<TransformedOrderDataDTO, Double> unitPriceColumn;
+    private TableColumn<OrderDTO, Integer> noOfUnitsColumn;
 
     @FXML
-    private TableColumn<TransformedOrderDataDTO, Double> totalPriceColumn;
+    private TableColumn<OrderDTO, Double> unitPriceColumn;
+
+    @FXML
+    private TableColumn<OrderDTO, Double> totalPriceColumn;
+
+    @FXML
+    private TableColumn<OrderDTO, String> commentsColumn;
+
+    @FXML
+    private Button sendButton;
+
+    @FXML
+    private Label infoLabel;
 
 
     private MainController mainController;
+    private TaskCreator taskCreator = new TaskCreator();
+    private boolean lastRecordDeleted = true;
+    private Task<Void> currentTask = new Task<Void>() {
+        @Override
+        protected Void call() throws Exception {
+            return null;
+        }
+    };
 
 
     public MainController getMainController() {
@@ -84,51 +101,64 @@ public class InputViewController {
         noOfUnitsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 300));
         noOfUnitsSpinner.setEditable(true);
         unitPriceTextField.setEditable(false);
+        sendButton.setDefaultButton(true);
         initTableView();
         populateComponents();
         setUpListeners();
         updatePriceLables();
     }
 
-
-    // PRIVATE DOMAIN
     //////////////////////////////////////////////////////////////////////////////////
+    // PRIVATE DOMAIN
+
 
     @FXML
-    private TransformedOrderDataDTO handleSendButtonClicked(ActionEvent actionEvent) {
+    private void handleSendButtonClicked(ActionEvent actionEvent) {
 
-        TransformedOrderDataDTO orderEntryDTO = null;
+        OrderDTO newOrderDTO = null;
 
-        if (validateInputFields()) {
+        if (isValidInputFields()) {
+            if (!currentTask.isRunning()) {
 
-            LocalDate date = datePicker.getValue();
-            InvoiceRecieverDTO invoiceRecieverDTO = invoiceRecieverCombobox.getValue();
-            AccountDTO accountDTO = accountsCombobox.getValue();
-            GoodsCategoryDTO goodsCatDTO = goodsCategoryComboBox.getValue();
-            int noOfUnits = noOfUnitsSpinner.getValue();
-            double unitPrice = Double.parseDouble(unitPriceTextField.getText());
-            double totalPrice = noOfUnits * unitPrice;
+                currentTask = taskCreator.getSendNewEntryAndUpdateTask();
+                infoLabel.setText("KOMMUNICERAR MED DATABAS");
+                Thread thread = new Thread(currentTask);
+                thread.start();
 
+            } else
+                showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
 
-            orderEntryDTO = new TransformedOrderDataDTO(date, invoiceRecieverDTO, accountDTO, goodsCatDTO, noOfUnits, unitPrice, totalPrice);
-
-            try {
-                mainController.sendNewEntry(orderEntryDTO);
-                tableView.getItems().add(orderEntryDTO);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                showAlert("Ett fel uppstod", "Det gick inte att skicka inmatningen till databasen just nu. \n " +
-                        "försök igen senare", Alert.AlertType.ERROR);
-            }
-
-            // TODO: 2016-08-24 send orderEntry to database
         } else
             showAlert("Felinmatning", "Fältet \"Á pris\" kan endast innehålla numeriska värden", Alert.AlertType.ERROR);
 
-        return orderEntryDTO;
     }
 
-    private boolean validateInputFields() {
+    @FXML
+    private OrderDTO handleUndoButtonClicked(ActionEvent actionEvent) {
+
+        OrderDTO removedOrder = null;
+        if (!lastRecordDeleted) {
+            ObservableList<OrderDTO> orderDTOs = tableView.getItems();
+            removedOrder = orderDTOs.remove(orderDTOs.size() - 1);
+            try {
+
+                int rowsaffected = mainController.deleteLastEntry();
+                System.out.println("Rows affected = " + rowsaffected);
+                lastRecordDeleted = true;
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showDefaultDatabaseErrorAlert();
+            }
+        } else {
+            showAlert("Meddelande", "Du kan endast radera den senaste inmatningen från database med denna knapp", Alert.AlertType.INFORMATION);
+        }
+        return removedOrder;
+
+    }
+
+
+    private boolean isValidInputFields() {
         try {
             Double.parseDouble(unitPriceTextField.getText());
         } catch (NumberFormatException e) {
@@ -141,54 +171,54 @@ public class InputViewController {
         return true;
     }
 
+    private void initTableView() {
+
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        invoiceRecieverColumn.setCellValueFactory(new PropertyValueFactory<>("invoiceReciever"));
+        destinationColumn.setCellValueFactory(new PropertyValueFactory<>("destination"));
+        goodsCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("goodsCategory"));
+        noOfUnitsColumn.setCellValueFactory(new PropertyValueFactory<>("noOfUnits"));
+        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+        commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
+
+    }
+
 
     private void populateComponents() {
 
         if (mainController != null) {
-            List<InvoiceRecieverDTO> invoiceRecieverDTOs = null;
-            List<GoodsCategoryDTO> goodsCategoryDTOs = null;
-            List<AccountDTO> accountDTOs = null;
-            List<TransformedOrderDataDTO> transformedOrderDataDTOs = null;
+            List<String> accounts = null;
+            List<String> invoiceRecieverDTOs = null;
+            List<String> goodsCategories = null;
+            List<OrderDTO> orderDTOs = null;
 
             try {
+                accounts = mainController.getAllAccounts();
+                goodsCategories = mainController.getAllGoodsCategories();
                 invoiceRecieverDTOs = mainController.getAllInvoiceRecievers();
-                goodsCategoryDTOs = mainController.getAllGoodsCategories();
-                accountDTOs = mainController.getAllAccounts();
-                transformedOrderDataDTOs = mainController.getEntries(5);
+                orderDTOs = mainController.getOrders(datePicker.getValue());
 
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                showAlert("Ett fel uppstod", "Det gick inte att få kontakt med databasen just nu, försök igen senare", Alert.AlertType.ERROR);
+                showDefaultDatabaseErrorAlert();
             }
 
             invoiceRecieverCombobox.getItems().addAll(invoiceRecieverDTOs);
             invoiceRecieverCombobox.getSelectionModel().selectFirst();
 
-            goodsCategoryComboBox.getItems().addAll(goodsCategoryDTOs);
+            goodsCategoryComboBox.getItems().addAll(goodsCategories);
             goodsCategoryComboBox.getSelectionModel().selectFirst();
 
-            accountsCombobox.getItems().addAll(accountDTOs);
+            accountsCombobox.getItems().addAll(accounts);
             accountsCombobox.getSelectionModel().selectFirst();
 
-            tableView.getItems().addAll(transformedOrderDataDTOs);
+            tableView.getItems().addAll(orderDTOs);
 
         } else System.err.println("Maincontroller not set!");
     }
 
-
-    private void initTableView() {
-
-        dateColumn.setCellValueFactory(new PropertyValueFactory<TransformedOrderDataDTO, Date>("date"));
-        invoiceRecieverColumn.setCellValueFactory(new PropertyValueFactory<TransformedOrderDataDTO, InvoiceRecieverDTO>("invoiceReciever"));
-        destinationColumn.setCellValueFactory(new PropertyValueFactory<TransformedOrderDataDTO, AccountDTO>("destination"));
-        goodsCategoryColumn.setCellValueFactory(new PropertyValueFactory<TransformedOrderDataDTO, GoodsCategoryDTO>("goodsCategory"));
-        noOfUnitsColumn.setCellValueFactory(new PropertyValueFactory<TransformedOrderDataDTO, Integer>("noOfUnits"));
-        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<TransformedOrderDataDTO, Double>("unitPrice"));
-        totalPriceColumn.setCellValueFactory(new PropertyValueFactory<TransformedOrderDataDTO, Double>("totalPrice"));
-
-
-    }
 
     private void setUpListeners() {
 
@@ -200,11 +230,27 @@ public class InputViewController {
             updatePriceLables();
         });
 
+        datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+
+            if (!currentTask.isRunning()) {
+
+                currentTask = taskCreator.getUpdateTableViewTask();
+                infoLabel.setText("KOMMUNICERAR MED DATABAS");
+                Thread thread = new Thread(currentTask);
+                thread.start();
+            }
+            else showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
+        });
+
 
     }
 
+    private void showDefaultDatabaseErrorAlert() {
+        showAlert("Ett fel uppstod", "Det gick inte att få kontakt med databasen just nu, försök igen senare", Alert.AlertType.ERROR);
+    }
+
     private void updatePriceLables() {
-        double unitPrice = goodsCategoryComboBox.getValue().UNIT_PRICE;
+        double unitPrice = mainController.getUnitPrice(goodsCategoryComboBox.getValue());
         int noOfUnits = noOfUnitsSpinner.getValue();
 
         unitPriceTextField.setText(Double.toString(unitPrice));
@@ -218,4 +264,94 @@ public class InputViewController {
         alert.showAndWait();
     }
 
+
+    private class TaskCreator {
+
+
+        private Task<Void> getSendNewEntryAndUpdateTask() {
+
+            Task task = new Task<Void>() {
+
+                @Override
+                protected Void call() throws Exception {
+
+                    OrderDTO newOrderDTO;
+
+
+                    String date = datePicker.getValue().toString();
+                    String invoiceReciever = invoiceRecieverCombobox.getValue();
+                    String accountDTO = accountsCombobox.getValue();
+                    String goodsCatDTO = goodsCategoryComboBox.getValue();
+                    int noOfUnits = noOfUnitsSpinner.getValue();
+                    double unitPrice = Double.parseDouble(unitPriceTextField.getText());
+                    double totalPrice = noOfUnits * unitPrice;
+                    String comment = commentsTextField.getText();
+
+
+                    newOrderDTO = new OrderDTO(0, date, invoiceReciever, accountDTO, goodsCatDTO, noOfUnits, unitPrice, totalPrice, comment);
+
+                    try {
+                        mainController.sendNewEntry(newOrderDTO);
+                        tableView.getItems().clear();
+                        tableView.getItems().addAll(mainController.getOrders(datePicker.getValue()));
+
+
+                        for (OrderDTO o : tableView.getItems())
+                            System.out.println(o.getId());
+
+                        lastRecordDeleted = false;
+
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        showDefaultDatabaseErrorAlert();
+                    }
+                    return null;
+                }
+
+            };
+
+
+            task.setOnSucceeded(event -> {
+                infoLabel.setText("");
+                System.out.println("sendNewEntryAndUpdateTask closed");
+
+            });
+
+            return task;
+
+        }
+
+
+        private Task<Void> getUpdateTableViewTask() {
+
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        tableView.getItems().clear();
+                        tableView.getItems().addAll(mainController.getOrders(datePicker.getValue()));
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        showDefaultDatabaseErrorAlert();
+                    }
+                    return null;
+                }
+            };
+
+            task.setOnSucceeded(event -> {
+                infoLabel.setText("");
+                System.out.println("updateTableTask closed");
+            });
+
+            return task;
+        }
+    }
+
+
 }
+
+
+
+

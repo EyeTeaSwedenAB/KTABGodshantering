@@ -1,9 +1,10 @@
 package com.peter.integration.database;
 
-import com.peter.dtos.AccountDTO;
-import com.peter.dtos.GoodsCategoryDTO;
-import com.peter.dtos.InvoiceRecieverDTO;
-import com.peter.dtos.RawOrderDataDTO;
+import com.peter.dto.OrderDTO;
+import com.peter.model.Account;
+import com.peter.model.GoodsCategory;
+import com.peter.model.InvoiceReciever;
+import com.peter.model.RawOrderData;
 import com.peter.integration.integrationrequirements.Credentials;
 
 import java.sql.SQLException;
@@ -20,15 +21,21 @@ public abstract class DatabaseHandler {
 
     public abstract void testConnection() throws SQLException;
 
-    public abstract List<AccountDTO> getAllAccounts() throws SQLException;
+    public abstract List<Account> getAllAccounts() throws SQLException;
 
-    public abstract List<InvoiceRecieverDTO> getAllInvoiceRecievers() throws SQLException;
+    public abstract List<InvoiceReciever> getAllInvoiceRecievers() throws SQLException;
 
-    public abstract List<GoodsCategoryDTO> getAllGoodsCategories() throws SQLException;
+    public abstract List<GoodsCategory> getAllGoodsCategories() throws SQLException;
 
-    public abstract List<RawOrderDataDTO> fetchRawOrderData(int limit) throws SQLException;
+    public abstract List<OrderDTO> fetchOrders(int limit) throws SQLException;
 
-    public abstract int sendNewEntry(RawOrderDataDTO rawOrderDataDTO) throws SQLException;
+    public abstract List<OrderDTO> fetchOrders(String date) throws SQLException;
+
+    public abstract int sendNewEntry(RawOrderData rawOrderData) throws SQLException;
+
+    public abstract int deleteLastEntry() throws SQLException;
+
+    public abstract int delete(DeleteCritera deleteCritera) throws SQLException;
 
     public static DatabaseHandler getNewInstance() {
         return new DatabaseHandlerImpl();

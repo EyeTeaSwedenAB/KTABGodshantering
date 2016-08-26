@@ -1,24 +1,23 @@
-package com.peter.dtos;
-
-import java.time.LocalDate;
+package com.peter.dto;
 
 /**
  * Created by andreajacobsson on 2016-08-24.
  */
-public class TransformedOrderDataDTO {
+public class OrderDTO {
 
-    private final LocalDate date;
-    private final InvoiceRecieverDTO invoiceReciever;
-    private final AccountDTO destination;
-    private final GoodsCategoryDTO goodsCategory;
+    private final int id;
+    private final String date;
+    private final String invoiceReciever;
+    private final String destination;
+    private final String goodsCategory;
     private final int noOfUnits;
     private final double unitPrice;
     private final double totalPrice;
+    private final String comment;
 
 
-    public TransformedOrderDataDTO(LocalDate date, InvoiceRecieverDTO invoiceReciever, AccountDTO destination,
-                                   GoodsCategoryDTO goodsCategory, int noOfUnits, double unitPrice, double totalPrice) {
-
+    public OrderDTO(int id, String date, String invoiceReciever, String destination, String goodsCategory, int noOfUnits, double unitPrice, double totalPrice, String comment) {
+        this.id = id;
         this.date = date;
         this.invoiceReciever = invoiceReciever;
         this.destination = destination;
@@ -26,21 +25,26 @@ public class TransformedOrderDataDTO {
         this.noOfUnits = noOfUnits;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
+        this.comment = comment;
     }
 
-    public LocalDate getDate() {
+    public int getId() {
+        return id;
+    }
+
+    public String getDate() {
         return date;
     }
 
-    public InvoiceRecieverDTO getInvoiceReciever() {
+    public String getInvoiceReciever() {
         return invoiceReciever;
     }
 
-    public AccountDTO getDestination() {
+    public String getDestination() {
         return destination;
     }
 
-    public GoodsCategoryDTO getGoodsCategory() {
+    public String getGoodsCategory() {
         return goodsCategory;
     }
 
@@ -56,4 +60,7 @@ public class TransformedOrderDataDTO {
         return totalPrice;
     }
 
+    public String getComment() {
+        return comment;
+    }
 }

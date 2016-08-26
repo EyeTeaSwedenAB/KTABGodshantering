@@ -1,10 +1,11 @@
 package com.peter.integration.database;
 
-import com.peter.dtos.AccountDTO;
-import com.peter.dtos.GoodsCategoryDTO;
-import com.peter.dtos.InvoiceRecieverDTO;
-import com.peter.dtos.RawOrderDataDTO;
+import com.peter.dto.OrderDTO;
 import com.peter.integration.integrationrequirements.Credentials;
+import com.peter.model.Account;
+import com.peter.model.GoodsCategory;
+import com.peter.model.InvoiceReciever;
+import com.peter.model.RawOrderData;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,12 +16,11 @@ import java.util.List;
  */
 class DatabaseHandlerImpl extends DatabaseHandler {
 
-    private Connection globalConnection;
+    Connection globalConnection;
+    Statement globalStmt;
+    PreparedStatement globalPrepStmt;
+    ResultSet globalResutset;
 
-    private Statement globalStmt;
-
-    private PreparedStatement globalPrepStmt;
-    private ResultSet globalResultSet;
     private Credentials credentials;
     private String url;
 
@@ -32,121 +32,151 @@ class DatabaseHandlerImpl extends DatabaseHandler {
         this.credentials = credentials;
     }
 
-
     @Override
     public void setUrl(String url) {
         this.url = url;
     }
+
 
     @Override
     public void setCredentials(Credentials credentials) {
         this.credentials = credentials;
     }
 
-
     @Override
     public void testConnection() throws SQLException {
 
-        openGlobalConnection();
-        closeGlobalRescources();
+        openGlobalRecources();
+        closeGlobalResources();
     }
 
+
     @Override
-    public List<AccountDTO> getAllAccounts() throws SQLException {
+    public List<Account> getAllAccounts() throws SQLException {
 
-        List<AccountDTO> accounts = new ArrayList<>();
+        List<Account> accounts = new ArrayList<>();
 
-        openGlobalConnection();
-        simpleQueryWithGlobalRecources("SELECT * FROM " + Table.ACCOUNTS);
+        openGlobalRecources();
+        doSimpleQuery("SELECT * FROM " + Table.ACCOUNTS);
 
-        while (globalResultSet.next()) {
-            accounts.add(new AccountDTO(globalResultSet.getInt("id"), globalResultSet.getString("name")));
+        while (globalResutset.next()) {
+            accounts.add(new Account(globalResutset.getInt("id"), globalResutset.getString("account")));
         }
 
-        closeGlobalRescources();
+        closeGlobalResources();
         return accounts;
     }
 
-
     @Override
-    public List<InvoiceRecieverDTO> getAllInvoiceRecievers() throws SQLException {
-        List<InvoiceRecieverDTO> invoiceRecievers = new ArrayList<>();
-        openGlobalConnection();
-        simpleQueryWithGlobalRecources("SELECT * FROM " + Table.INVOICE_RECIEVERS);
+    public List<InvoiceReciever> getAllInvoiceRecievers() throws SQLException {
+        List<InvoiceReciever> invoiceRecievers = new ArrayList<>();
+        openGlobalRecources();
+        doSimpleQuery("SELECT * FROM " + Table.INVOICE_RECIEVERS);
 
-        while (globalResultSet.next())
-            invoiceRecievers.add(new InvoiceRecieverDTO(globalResultSet.getInt("id"),
-                    globalResultSet.getString("name"),
-                    globalResultSet.getString("adress"),
-                    globalResultSet.getString("contact"),
-                    globalResultSet.getString("phone")));
+        while (globalResutset.next())
+            invoiceRecievers.add(new InvoiceReciever(globalResutset.getInt("id"),
+                    globalResutset.getString("company"),
+                    globalResutset.getString("adress"),
+                    globalResutset.getString("contact"),
+                    globalResutset.getString("phone")));
 
-        closeGlobalRescources();
+        closeGlobalResources();
         return invoiceRecievers;
     }
 
+
     @Override
-    public List<GoodsCategoryDTO> getAllGoodsCategories() throws SQLException {
+    public List<GoodsCategory> getAllGoodsCategories() throws SQLException {
 
-        List<GoodsCategoryDTO> goodsCategories = new ArrayList<>();
-        openGlobalConnection();
-        simpleQueryWithGlobalRecources("SELECT * FROM " + Table.GOODS_CATEGORIES);
+        List<GoodsCategory> goodsCategories = new ArrayList<>();
+        openGlobalRecources();
+        doSimpleQuery("SELECT * FROM " + Table.GOODS_CATEGORIES);
 
-        while (globalResultSet.next()) {
-            goodsCategories.add(new GoodsCategoryDTO(globalResultSet.getInt("id"), globalResultSet.getString("category"), Double.parseDouble(globalResultSet.getString("unitprice"))));
+        while (globalResutset.next()) {
+            goodsCategories.add(new GoodsCategory(
+                    globalResutset.getInt("id"),
+                    globalResutset.getString("category"),
+                    Double.parseDouble(globalResutset.getString("unitprice"))));
         }
-        closeGlobalRescources();
+        closeGlobalResources();
         return goodsCategories;
     }
 
     @Override
-    public List<RawOrderDataDTO> fetchRawOrderData(int limit) throws SQLException {
-
-        String sql = "SELECT * FROM " + Table.ORDERS;
-
-        if (limit == -1)
-            sql = sql + " LIMIT" + limit;
-
-        List<RawOrderDataDTO> rawOrderDataDTOs = new ArrayList<>();
+    public List<OrderDTO> fetchOrders(int limit) throws SQLException {
 
 
-        openGlobalConnection();
-        simpleQueryWithGlobalRecources(sql);
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment " +
+                "FROM orders " +
+                "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
+                "JOIN accounts ON orders.accounts_id = accounts.id " +
+                "JOIN goodscategories ON orders.goodscategories_id = goodscategories.id " +
+                "ORDER BY orders.id ASC";
 
-        while (globalResultSet.next()) {
+        if (limit != -1)
+            sql = sql + " LIMIT " + limit;
 
-            rawOrderDataDTOs.add(new RawOrderDataDTO(
-                    globalResultSet.getInt("id"),
-                    globalResultSet.getString("date"),
-                    globalResultSet.getInt("invoicereciever_id"),
-                    globalResultSet.getInt("accounts_id"),
-                    globalResultSet.getInt("goodscategories_id"),
-                    globalResultSet.getInt("nounits"),
-                    globalResultSet.getDouble("totalprice")));
-        }
+        List<OrderDTO> orderDTOs = executeFetchOrders(sql);
 
-        closeGlobalRescources();
-
-        return rawOrderDataDTOs;
+        return orderDTOs;
     }
 
+    @Override
+    public List<OrderDTO> fetchOrders(String date) throws SQLException {
+
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment " +
+                "FROM orders " +
+                "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
+                "JOIN accounts ON orders.accounts_id = accounts.id " +
+                "JOIN goodscategories ON orders.goodscategories_id = goodscategories.id " +
+                "WHERE orders.date = '" + date + "' " +
+                "ORDER BY orders.id ASC";
+
+        List<OrderDTO> orderDTOs = executeFetchOrders(sql);
+
+        return orderDTOs;
+
+
+    }
 
     @Override
-    public int sendNewEntry(RawOrderDataDTO rawOrderDataDTO) throws SQLException {
+    public int sendNewEntry(RawOrderData rawOrderData) throws SQLException {
 
-        String sql = "INSERT INTO " + Table.ORDERS +
-                " (date, invoicereciever_id, accounts_id, goodscategories_id, nounits, totalprice) " +
-                "VALUES ("
-                + "'" + rawOrderDataDTO.DATE + "'" + ", " + rawOrderDataDTO.INVOICE_RECIEVER_ID + ", " + rawOrderDataDTO.ACCOUNT_ID + ", " +
-                rawOrderDataDTO.GOODS_CATEGORY_ID + ", " + rawOrderDataDTO.NO_OF_UNITS + ", " + rawOrderDataDTO.TOTAL_PRICE +
-                ");";
 
-        System.out.println(sql);
+        String sql = "INSERT INTO " + Table.ORDERS + "(date, invoicereciever_id, accounts_id, goodscategories_id, nounits, totalprice, comment)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        openGlobalConnection();
-        int rowsAffected = simpleUpdateWithGlobalRecources(sql);
-        closeGlobalRescources();
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setString(1, rawOrderData.getDate());
+        globalPrepStmt.setInt(2, rawOrderData.getInvoiceRecieverId());
+        globalPrepStmt.setInt(3, rawOrderData.getAccountId());
+        globalPrepStmt.setInt(4, rawOrderData.getGoodsCategoryId());
+        globalPrepStmt.setInt(5, rawOrderData.getNoOfUnits());
+        globalPrepStmt.setDouble(6, rawOrderData.getTotalPrice());
+        globalPrepStmt.setString(7, rawOrderData.getComment());
+
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+
         return rowsAffected;
+    }
+
+    @Override
+    public int deleteLastEntry() throws SQLException {
+
+        String sql = "DELETE FROM " + Table.ORDERS + " ORDER BY id DESC LIMIT 1";
+
+        openGlobalRecources();
+        int rowsAffected = doSimpleUpdate(sql);
+        closeGlobalResources();
+        return rowsAffected;
+
+    }
+
+    @Override
+    public int delete(DeleteCritera deleteCritera) throws SQLException {
+        return 0;
     }
 
 
@@ -154,37 +184,83 @@ class DatabaseHandlerImpl extends DatabaseHandler {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    private void simpleQueryWithGlobalRecources(String updateSql) throws SQLException {
+    private List<OrderDTO> executeFetchOrders(String sql) throws SQLException {
 
+        List<OrderDTO> orderDTOs = new ArrayList<>();
+
+        openGlobalRecources();
+        doSimpleQuery(sql);
+
+        while (globalResutset.next()) {
+            OrderDTO orderDTO = constructOrderDTO();
+            orderDTOs.add(orderDTO);
+            System.out.println("Order added: " + orderDTO);
+        }
+
+        closeGlobalResources();
+        return orderDTOs;
+    }
+
+
+    private void doSimpleQuery(String sql) throws SQLException {
         globalStmt = globalConnection.createStatement();
-        globalResultSet = globalStmt.executeQuery(updateSql);
+        globalResutset = globalStmt.executeQuery(sql);
 
     }
 
-    private int simpleUpdateWithGlobalRecources(String sql) throws SQLException {
+
+    private int doSimpleUpdate(String sql) throws SQLException {
 
         globalStmt = globalConnection.createStatement();
-        return globalStmt.executeUpdate(sql);
-
+        int rowsAffected = globalStmt.executeUpdate(sql);
+        return rowsAffected;
 
     }
 
-    private void openGlobalConnection() throws SQLException {
+    private Connection openGlobalRecources() throws SQLException {
 
         globalConnection = DriverManager.getConnection(url, credentials.getUSERNAME(), credentials.getPASSWORD());
+        return globalConnection;
     }
 
+    private void closeGlobalResources(Connection connection, PreparedStatement preparedStatement, Statement statement, ResultSet resultSet) throws SQLException {
 
-    private void closeGlobalRescources() throws SQLException {
+        if (resultSet != null)
+            resultSet.close();
+        if (statement != null)
+            statement.close();
+        if (preparedStatement != null)
+            preparedStatement.close();
+        if (connection != null)
+            connection.close();
+    }
 
-        if (globalResultSet != null)
-            globalResultSet.close();
+    private void closeGlobalResources() throws SQLException {
+
+        if (globalResutset != null)
+            globalResutset.close();
         if (globalPrepStmt != null)
             globalPrepStmt.close();
         if (globalStmt != null)
             globalStmt.close();
         if (globalConnection != null)
             globalConnection.close();
+    }
+
+
+    private OrderDTO constructOrderDTO() throws SQLException {
+
+
+        return new OrderDTO(
+                globalResutset.getInt("id"),
+                globalResutset.getString("date"),
+                globalResutset.getString("company"),
+                globalResutset.getString("account"),
+                globalResutset.getString("category"),
+                globalResutset.getInt("nounits"),
+                globalResutset.getDouble("unitprice"),
+                globalResutset.getDouble("totalprice"),
+                globalResutset.getString("comment"));
 
     }
 }

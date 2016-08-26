@@ -5,14 +5,11 @@
 
     <groupId>com.peter</groupId>
     <artifactId>KTABGodshantering</artifactId>
-    <name>KTABGodshantering</name>
-
-    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-    
+    <packaging>jar</packaging>
+
     <organization>
         <!-- Used as the 'Vendor' for JNLP generation -->
-        <name>Your Organisation</name>
     </organization>
 
     <properties>
@@ -29,7 +26,6 @@
                 <configuration>
 
                     <mainClass>com.peter.startup.MainApp</mainClass>
-
                     <!-- only required if signing the jar file -->
                     <keyStoreAlias>example-user</keyStoreAlias>
                     <keyStorePassword>example-password</keyStorePassword>
