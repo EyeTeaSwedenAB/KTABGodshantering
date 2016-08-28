@@ -141,8 +141,15 @@ public class DataManager {
 
 
     // Private Domain
-    ////////////////////////////////////////////////////////////////////////////////////
+    public List<String> deleteInvoiceReciever(String selectedInvoiceReciever) throws SQLException {
+        InvoiceReciever invoiceReciever = nameToInvoiceRecieverMap.get(selectedInvoiceReciever);
+        datafetcher.deteleInvoiceReciever(invoiceReciever);
+        List<InvoiceReciever> newInvoiceRecievers = datafetcher.getAllInvoiceRecievers();
+        return updateInvoiceRecieveMaps(newInvoiceRecievers);
+    }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////
 
     private List<String> updateInvoiceRecieveMaps(List<InvoiceReciever> invoiceRecievers) {
         List<String> invoiceRecieversAsStrings = new ArrayList<>();

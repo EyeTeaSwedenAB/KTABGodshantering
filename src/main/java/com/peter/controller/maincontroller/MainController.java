@@ -90,6 +90,10 @@ public class MainController {
         return dataManager.addAccount(account);
     }
 
+    public List<String> deleteInvoiceReciever(String selectedInvoiceReciever) throws SQLException {
+        return dataManager.deleteInvoiceReciever(selectedInvoiceReciever);
+    }
+
 
     // PRIVATE DOMAIN
     ///////////////////////////////////////////////////////////////////////////////

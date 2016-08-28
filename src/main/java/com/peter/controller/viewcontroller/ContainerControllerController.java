@@ -2,7 +2,7 @@ package com.peter.controller.viewcontroller;
 
 import com.peter.controller.InitializableControllee;
 import com.peter.controller.maincontroller.MainController;
-import com.peter.controller.popupviewcontroller.AbstractPopupwindowController;
+import com.peter.controller.popupviewcontroller.AbstractPopupViewController;
 import com.peter.observ.Oberver;
 import com.peter.observ.ObservableController;
 import com.peter.observ.UpdateEvent;
@@ -71,13 +71,29 @@ public class ContainerControllerController implements InitializableControllee, O
         }
     }
 
+    @FXML
+    private void handleDeleteInvoiceReciever(){
+
+        try {
+            showPopup("/fxml/DeleteInvoiceRecieverPopup.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteGoodsCategory(){}
+
+    @FXML
+    private void handleDeleteAccount(){}
+
 
     private void showPopup(String path) throws IOException {
 
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         Parent window = loader.load();
-        AbstractPopupwindowController popupView = loader.getController();
+        AbstractPopupViewController popupView = loader.getController();
 
         Stage stage = new Stage();
         stage.setScene(new Scene(window));
@@ -86,6 +102,7 @@ public class ContainerControllerController implements InitializableControllee, O
         popupView.setMainController(this.mainController);
         popupView.addObserver(this);
         popupView.setStage(stage);
+        popupView.init();
         stage.show();
 
     }

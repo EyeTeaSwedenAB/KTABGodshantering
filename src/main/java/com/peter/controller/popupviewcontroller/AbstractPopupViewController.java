@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-28.
  */
-public abstract class AbstractPopupwindowController implements ObservableController, InitializableControllee {
+public abstract class AbstractPopupViewController implements ObservableController, InitializableControllee {
 
 
     private MainController mainController;

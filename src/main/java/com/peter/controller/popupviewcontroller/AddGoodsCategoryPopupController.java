@@ -1,6 +1,5 @@
 package com.peter.controller.popupviewcontroller;
 
-import com.peter.controller.InitializableControllee;
 import com.peter.controller.Util;
 import com.peter.observ.GoodsCategoryUpdateEvent;
 import com.peter.observ.Oberver;
@@ -16,7 +15,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-28.
  */
-public class GoodsCategoryPopupControllerAbstract extends AbstractPopupwindowController {
+public class AddGoodsCategoryPopupController extends AbstractPopupViewController {
 
 
     @FXML

@@ -1,6 +1,5 @@
 package com.peter.controller.popupviewcontroller;
 
-import com.peter.controller.InitializableControllee;
 import com.peter.controller.Util;
 import com.peter.observ.AccountUpdateEvent;
 import com.peter.observ.Oberver;
@@ -16,7 +15,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-28.
  */
-public class AccountPopupControllerAbstract extends AbstractPopupwindowController{
+public class AddAccountPopupController extends AbstractPopupViewController {
 
     @FXML
     private TextField accountTextField;

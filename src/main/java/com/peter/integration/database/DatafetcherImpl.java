@@ -57,7 +57,7 @@ class DatafetcherImpl extends Datafetcher {
         List<Account> accounts = new ArrayList<>();
 
         openGlobalRecources();
-        loadGlobalResultSet("SELECT * FROM " + Table.ACCOUNTS);
+        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.ACCOUNTS);
 
         while (globalResutset.next()) {
             accounts.add(new Account(globalResutset.getInt("id"), globalResutset.getString("account")));
@@ -72,7 +72,7 @@ class DatafetcherImpl extends Datafetcher {
     public List<InvoiceReciever> getAllInvoiceRecievers() throws SQLException {
         List<InvoiceReciever> invoiceRecievers = new ArrayList<>();
         openGlobalRecources();
-        loadGlobalResultSet("SELECT * FROM " + Table.INVOICE_RECIEVERS);
+        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.INVOICE_RECIEVERS);
 
         while (globalResutset.next())
             invoiceRecievers.add(new InvoiceReciever(globalResutset.getInt("id"),
@@ -91,7 +91,7 @@ class DatafetcherImpl extends Datafetcher {
 
         List<GoodsCategory> goodsCategories = new ArrayList<>();
         openGlobalRecources();
-        loadGlobalResultSet("SELECT * FROM " + Table.GOODS_CATEGORIES);
+        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.GOODS_CATEGORIES);
 
         while (globalResutset.next()) {
             goodsCategories.add(new GoodsCategory(
@@ -219,6 +219,20 @@ class DatafetcherImpl extends Datafetcher {
         return rowsAffected;
     }
 
+    @Override
+    public int deteleInvoiceReciever(InvoiceReciever invoiceReciever) throws SQLException {
+
+        String sql = "DELETE FROM " + Table.INVOICE_RECIEVERS + " WHERE id = ?";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setInt(1, invoiceReciever.getId());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
+
+
+    }
+
 
     // PRIVATE DOMAIN
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +243,7 @@ class DatafetcherImpl extends Datafetcher {
         List<OrderDTO> orderDTOs = new ArrayList<>();
 
         openGlobalRecources();
-        loadGlobalResultSet(sql);
+        loadGlobalResultSetForSimpleQurey(sql);
 
         while (globalResutset.next()) {
             OrderDTO orderDTO = constructOrderDTO();
@@ -241,7 +255,7 @@ class DatafetcherImpl extends Datafetcher {
     }
 
 
-    private void loadGlobalResultSet(String sql) throws SQLException {
+    private void loadGlobalResultSetForSimpleQurey(String sql) throws SQLException {
         globalStmt = globalConnection.createStatement();
         globalResutset = globalStmt.executeQuery(sql);
 

@@ -1,13 +1,11 @@
 package com.peter.controller.popupviewcontroller;
 
-import com.peter.controller.InitializableControllee;
 import com.peter.controller.Util;
 import com.peter.observ.InvoiceRecieverUpdateEvent;
 import com.peter.observ.Oberver;
 import com.peter.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
@@ -16,7 +14,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-27.
  */
-public class InvoiceRecieverPopupController extends AbstractPopupwindowController {
+public class AddInvoiceRecieverPopupController extends AbstractPopupViewController {
 
     @FXML
     private TextField companyTextField;

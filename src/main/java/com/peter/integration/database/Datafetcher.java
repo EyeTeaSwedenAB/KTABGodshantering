@@ -50,4 +50,6 @@ public abstract class Datafetcher {
     }
 
     public abstract int addAccount(Account account) throws SQLException;
+
+    public abstract int deteleInvoiceReciever(InvoiceReciever invoiceReciever) throws SQLException;
 }

@@ -23,6 +23,13 @@
                         <MenuItem fx:id="addAccountMenuItem" mnemonicParsing="false" onAction="#handleAddAccount" text="Nytt kostnadsställe" />
                     </items>
                   </Menu>
+                  <Menu mnemonicParsing="false" text="Ta bort">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#handleDeleteInvoiceReciever" text="Fakturamottagare" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteGoodsCategory" text="Godstyp" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteAccount" text="Kostnadsställe" />
+                    </items>
+                  </Menu>
                </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Hjälp">
