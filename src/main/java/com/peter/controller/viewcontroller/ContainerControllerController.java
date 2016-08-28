@@ -79,7 +79,6 @@ public class ContainerControllerController implements InitializableControllee, O
         Parent window = loader.load();
         AbstractPopupwindowController popupView = loader.getController();
 
-
         Stage stage = new Stage();
         stage.setScene(new Scene(window));
 

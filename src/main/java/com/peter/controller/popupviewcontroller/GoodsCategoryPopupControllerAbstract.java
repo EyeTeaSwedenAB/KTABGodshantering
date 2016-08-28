@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-28.
  */
-public class GoodsCategoryPopupControllerAbstract extends AbstractPopupwindowController implements InitializableControllee {
+public class GoodsCategoryPopupControllerAbstract extends AbstractPopupwindowController {
 
 
     @FXML
@@ -59,6 +59,11 @@ public class GoodsCategoryPopupControllerAbstract extends AbstractPopupwindowCon
 
         } else
             Util.showAlert("Felaktig inmating", "Samtliga fält måste vara ifyllda, enhetpris måste vara ett siffervärde", Alert.AlertType.WARNING);
+    }
+
+    @FXML
+    private void v(){
+        this.getStage().close();
     }
 
     private boolean isValidInput(String goodsCategory, String unitPrice) {

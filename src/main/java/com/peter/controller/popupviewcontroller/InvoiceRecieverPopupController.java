@@ -7,6 +7,7 @@ import com.peter.observ.Oberver;
 import com.peter.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-27.
  */
-public class InvoiceRecieverPopupControllerAbstract extends AbstractPopupwindowController implements InitializableControllee {
+public class InvoiceRecieverPopupController extends AbstractPopupwindowController {
 
     @FXML
     private TextField companyTextField;
@@ -28,6 +29,7 @@ public class InvoiceRecieverPopupControllerAbstract extends AbstractPopupwindowC
 
     @FXML
     private TextField phoneTextField;
+
 
 
     @Override
@@ -64,6 +66,10 @@ public class InvoiceRecieverPopupControllerAbstract extends AbstractPopupwindowC
         }
 
 
+    }
+    @FXML
+    private void handleCancelButtonClicked(){
+        this.getStage().close();
     }
 
 

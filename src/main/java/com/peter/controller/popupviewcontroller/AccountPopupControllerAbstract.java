@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-28.
  */
-public class AccountPopupControllerAbstract extends AbstractPopupwindowController implements InitializableControllee{
+public class AccountPopupControllerAbstract extends AbstractPopupwindowController{
 
     @FXML
     private TextField accountTextField;
@@ -29,7 +29,6 @@ public class AccountPopupControllerAbstract extends AbstractPopupwindowControlle
     public void init() {
 
     }
-
 
     @FXML
     private void handleSendButtonClicked() {
@@ -54,6 +53,11 @@ public class AccountPopupControllerAbstract extends AbstractPopupwindowControlle
             }
         } else
             Util.showAlert("Felaktig inmatning", "Fältet destnation måste vara ifyllt.", Alert.AlertType.INFORMATION);
+    }
+
+    @FXML
+    private void handleCancelButtonClicked(){
+        this.getStage().close();
     }
 
     private boolean isValidInput(String account) {
