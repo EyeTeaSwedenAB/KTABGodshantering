@@ -1,8 +1,8 @@
 package com.peter.startup;
 
 import com.peter.controller.maincontroller.MainController;
+import com.peter.controller.viewcontroller.ContainerControllerController;
 import com.peter.controller.viewcontroller.InputViewController;
-import com.sun.glass.ui.MenuItem;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,24 +18,27 @@ public class MainApp extends Application {
 
     public void start(Stage stage) throws Exception {
 
-        FXMLLoader mainViewLoader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-        BorderPane mainView = mainViewLoader.load();
-
-        FXMLLoader inputViewLoader = new FXMLLoader(getClass().getResource("/fxml/InputView.fxml"));
-        BorderPane inputView = inputViewLoader.load();
-        InputViewController ivc = inputViewLoader.getController();
-
         MainController mainController = new MainController();
         mainController.setLoginInformation("jdbc:mysql://ktabtest.cyzgfcxn1ubh.eu-central-1.rds.amazonaws.com:3306/KTABGoodsTest", "pebo0602", "PetBob82");
 
-        ivc.setMainController(mainController);
-        ivc.init();
+        FXMLLoader containerViewLoader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        BorderPane containerView = containerViewLoader.load();
+        ContainerControllerController containerViewController = containerViewLoader.getController();
+        containerViewController.setMainController(mainController);
+        containerViewController.init();
 
+        FXMLLoader inputViewLoader = new FXMLLoader(getClass().getResource("/fxml/InputView.fxml"));
+        BorderPane inputView = inputViewLoader.load();
+        InputViewController inputViewController = inputViewLoader.getController();
+        inputViewController.setMainController(mainController);
+        inputViewController.init();
 
+        containerViewController.addObserver(inputViewController);
 
-        mainView.setBottom(inputView);
-        stage.setScene(new Scene(mainView));
+        containerView.setBottom(inputView);
+        stage.setScene(new Scene(containerView));
         stage.show();
+
 
     }
 }

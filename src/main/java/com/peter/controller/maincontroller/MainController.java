@@ -1,7 +1,7 @@
 package com.peter.controller.maincontroller;
 
 import com.peter.dto.OrderDTO;
-import com.peter.integration.IntegrationLogicManager;
+import com.peter.integration.DataManager;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -12,43 +12,43 @@ import java.util.List;
  */
 public class MainController {
 
-    private IntegrationLogicManager integrationLogicManager;
+    private DataManager dataManager;
 
     public MainController() {
 
-        integrationLogicManager = new IntegrationLogicManager();
+        dataManager = new DataManager();
     }
 
     public MainController(String url, String userName, String password) {
-        integrationLogicManager = new IntegrationLogicManager();
-        integrationLogicManager.setLoginInformation(url, userName, password);
+        dataManager = new DataManager();
+        dataManager.setLoginInformation(url, userName, password);
     }
 
     public void setLoginInformation(String url, String userName, String password) {
-        integrationLogicManager.setLoginInformation(url, userName, password);
+        dataManager.setLoginInformation(url, userName, password);
     }
 
 
     public void testConnection() throws SQLException {
-        integrationLogicManager.testConnection();
+        dataManager.testConnection();
     }
 
     public List<String> getAllAccounts() throws SQLException {
-        List<String> accountsAsStrings = integrationLogicManager.getAllAccounts();
+        List<String> accountsAsStrings = dataManager.getAllAccounts();
 
         return accountsAsStrings;
     }
 
     public List<String> getAllGoodsCategories() throws SQLException {
 
-        List<String> goodsCategoryAsStrings = integrationLogicManager.getAllGoodsCategories();
+        List<String> goodsCategoryAsStrings = dataManager.getAllGoodsCategories();
 
         return goodsCategoryAsStrings;
     }
 
 
     public List<String> getAllInvoiceRecievers() throws SQLException {
-        List<String> invoiceRecieversAsStrings = integrationLogicManager.getAllInvoiceRecievers();
+        List<String> invoiceRecieversAsStrings = dataManager.getAllInvoiceRecievers();
 
         return invoiceRecieversAsStrings;
 
@@ -56,30 +56,43 @@ public class MainController {
 
 
     public int sendNewEntry(OrderDTO orderEntryDTO) throws SQLException {
-        return integrationLogicManager.sendNewEntry(orderEntryDTO);
+        return dataManager.sendNewEntry(orderEntryDTO);
     }
 
     public List<OrderDTO> getOrders(int limit) throws SQLException {
-        return integrationLogicManager.getOrders(limit);
+        return dataManager.getOrders(limit);
     }
 
     public List<OrderDTO> getOrders(LocalDate localDate) throws SQLException {
-        return integrationLogicManager.getOrders(localDate);
+        return dataManager.getOrders(localDate);
     }
 
     public double getUnitPrice(String goodsCategory) {
 
-        return integrationLogicManager.getUnitPrice(goodsCategory);
+        return dataManager.getUnitPrice(goodsCategory);
     }
 
     public int deleteLastEntry() throws SQLException {
-        return integrationLogicManager.deleteLastEntry();
+        return dataManager.deleteLastEntry();
+    }
+
+    public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone) throws SQLException {
+        return dataManager.addNewInvoiceReciever(company, address, contact, phone);
+    }
+
+    public List<String> addGoodsCategory(String goodsCategory, double unitPrice) throws SQLException {
+
+        return dataManager.addGoodsGategory(goodsCategory, unitPrice);
+    }
+
+    public List<String> addAccount(String account) throws SQLException {
+
+        return dataManager.addAccount(account);
     }
 
 
     // PRIVATE DOMAIN
     ///////////////////////////////////////////////////////////////////////////////
-
 
 
 }

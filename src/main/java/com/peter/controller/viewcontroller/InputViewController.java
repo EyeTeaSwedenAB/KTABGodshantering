@@ -1,7 +1,10 @@
 package com.peter.controller.viewcontroller;
 
+import com.peter.controller.InitializableControllee;
+import com.peter.controller.Util;
 import com.peter.controller.maincontroller.MainController;
 import com.peter.dto.OrderDTO;
+import com.peter.observ.*;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -16,7 +19,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class InputViewController {
+public class InputViewController implements InitializableControllee, Oberver {
 
     @FXML
     private DatePicker datePicker;
@@ -79,6 +82,7 @@ public class InputViewController {
     private MainController mainController;
     private TaskCreator taskCreator = new TaskCreator();
     private boolean lastRecordDeleted = true;
+
     private Task<Void> currentTask = new Task<Void>() {
         @Override
         protected Void call() throws Exception {
@@ -91,10 +95,12 @@ public class InputViewController {
         return mainController;
     }
 
+    @Override
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
 
+    @Override
     public void init() {
 
         datePicker.setValue(LocalDate.now());
@@ -126,10 +132,10 @@ public class InputViewController {
                 thread.start();
 
             } else
-                showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
+                Util.showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
 
         } else
-            showAlert("Felinmatning", "Fältet \"Á pris\" kan endast innehålla numeriska värden", Alert.AlertType.ERROR);
+            Util.showAlert("Felinmatning", "Fältet \"Á pris\" kan endast innehålla numeriska värden", Alert.AlertType.ERROR);
 
     }
 
@@ -151,7 +157,7 @@ public class InputViewController {
                 showDefaultDatabaseErrorAlert();
             }
         } else {
-            showAlert("Meddelande", "Du kan endast radera den senaste inmatningen från database med denna knapp", Alert.AlertType.INFORMATION);
+            Util.showAlert("Meddelande", "Du kan endast radera den senaste inmatningen från database med denna knapp", Alert.AlertType.INFORMATION);
         }
         return removedOrder;
 
@@ -238,15 +244,15 @@ public class InputViewController {
                 infoLabel.setText("KOMMUNICERAR MED DATABAS");
                 Thread thread = new Thread(currentTask);
                 thread.start();
-            }
-            else showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
+            } else
+                Util.showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
         });
 
 
     }
 
     private void showDefaultDatabaseErrorAlert() {
-        showAlert("Ett fel uppstod", "Det gick inte att få kontakt med databasen just nu, försök igen senare", Alert.AlertType.ERROR);
+        Util.showAlert("Ett fel uppstod", "Det gick inte att få kontakt med databasen just nu, försök igen senare", Alert.AlertType.ERROR);
     }
 
     private void updatePriceLables() {
@@ -257,12 +263,32 @@ public class InputViewController {
         totalPriceLabel.setText(Double.toString(unitPrice * noOfUnits));
     }
 
-    private void showAlert(String header, String message, Alert.AlertType alertType) {
 
-        Alert alert = new Alert(alertType, message);
-        alert.setHeaderText(header);
-        alert.showAndWait();
+    @Override
+    public void update(UpdateEvent event) {
+
+        if (event instanceof InvoiceRecieverUpdateEvent) {
+            invoiceRecieverCombobox.getItems().clear();
+            invoiceRecieverCombobox.getItems().addAll((List<String>) event.getObject());
+            invoiceRecieverCombobox.getSelectionModel().selectFirst();
+
+        } else if (event instanceof GoodsCategoryUpdateEvent) {
+            goodsCategoryComboBox.getItems().clear();
+            goodsCategoryComboBox.getItems().addAll((List<String>) event.getObject());
+            goodsCategoryComboBox.getSelectionModel().selectFirst();
+        }
+
+        else if (event instanceof AccountUpdateEvent){
+            accountsCombobox.getItems().clear();
+            accountsCombobox.getItems().addAll((List<String>) event.getObject());
+            accountsCombobox.getSelectionModel().selectFirst();
+        }
+
     }
+
+
+
+
 
 
     private class TaskCreator {
@@ -322,7 +348,6 @@ public class InputViewController {
 
         }
 
-
         private Task<Void> getUpdateTableViewTask() {
 
             Task<Void> task = new Task<Void>() {
@@ -342,14 +367,13 @@ public class InputViewController {
 
             task.setOnSucceeded(event -> {
                 infoLabel.setText("");
-                System.out.println("updateTableTask closed");
             });
 
             return task;
         }
+
+
     }
-
-
 }
 
 

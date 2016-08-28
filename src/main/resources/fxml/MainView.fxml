@@ -5,21 +5,27 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.peter.controller.viewcontroller.ContainerControllerController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" text="Arkiv">
                     <items>
                         <MenuItem mnemonicParsing="false" text="Close" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu mnemonicParsing="false" text="Redigera">
+               <items>
+                  <Menu mnemonicParsing="false" text="Lägg till">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
+                      <MenuItem fx:id="addInvoiceRecieverMenuItem" mnemonicParsing="false" onAction="#handeAddInvoiceReciever" text="Ny fakturamottagare" />
+                        <MenuItem fx:id="addGoodsCategoryMenuItem" mnemonicParsing="false" onAction="#handleAddGoodsCategory" text="Ny godstyp" />
+                        <MenuItem fx:id="addAccountMenuItem" mnemonicParsing="false" onAction="#handleAddAccount" text="Nytt kostnadsställe" />
                     </items>
+                  </Menu>
+               </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu mnemonicParsing="false" text="Hjälp">
                     <items>
                         <MenuItem mnemonicParsing="false" text="About" />
                     </items>

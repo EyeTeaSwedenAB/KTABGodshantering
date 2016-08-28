@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-class DatabaseHandlerImpl extends DatabaseHandler {
+class DatafetcherImpl extends Datafetcher {
 
     Connection globalConnection;
     Statement globalStmt;
@@ -24,10 +24,10 @@ class DatabaseHandlerImpl extends DatabaseHandler {
     private Credentials credentials;
     private String url;
 
-    DatabaseHandlerImpl() {
+    DatafetcherImpl() {
     }
 
-    DatabaseHandlerImpl(String url, Credentials credentials) {
+    DatafetcherImpl(String url, Credentials credentials) {
         this.url = url;
         this.credentials = credentials;
     }
@@ -57,7 +57,7 @@ class DatabaseHandlerImpl extends DatabaseHandler {
         List<Account> accounts = new ArrayList<>();
 
         openGlobalRecources();
-        doSimpleQuery("SELECT * FROM " + Table.ACCOUNTS);
+        loadGlobalResultSet("SELECT * FROM " + Table.ACCOUNTS);
 
         while (globalResutset.next()) {
             accounts.add(new Account(globalResutset.getInt("id"), globalResutset.getString("account")));
@@ -67,11 +67,12 @@ class DatabaseHandlerImpl extends DatabaseHandler {
         return accounts;
     }
 
+
     @Override
     public List<InvoiceReciever> getAllInvoiceRecievers() throws SQLException {
         List<InvoiceReciever> invoiceRecievers = new ArrayList<>();
         openGlobalRecources();
-        doSimpleQuery("SELECT * FROM " + Table.INVOICE_RECIEVERS);
+        loadGlobalResultSet("SELECT * FROM " + Table.INVOICE_RECIEVERS);
 
         while (globalResutset.next())
             invoiceRecievers.add(new InvoiceReciever(globalResutset.getInt("id"),
@@ -90,7 +91,7 @@ class DatabaseHandlerImpl extends DatabaseHandler {
 
         List<GoodsCategory> goodsCategories = new ArrayList<>();
         openGlobalRecources();
-        doSimpleQuery("SELECT * FROM " + Table.GOODS_CATEGORIES);
+        loadGlobalResultSet("SELECT * FROM " + Table.GOODS_CATEGORIES);
 
         while (globalResutset.next()) {
             goodsCategories.add(new GoodsCategory(
@@ -179,6 +180,45 @@ class DatabaseHandlerImpl extends DatabaseHandler {
         return 0;
     }
 
+    @Override
+    public int addInvoiceReciever(InvoiceReciever invoiceReciever) throws SQLException {
+        String sql = "INSERT INTO " + Table.INVOICE_RECIEVERS + " (company, adress, contact, phone) VALUES (?, ?, ?, ?)";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setString(1, invoiceReciever.getCompany());
+        globalPrepStmt.setString(2, invoiceReciever.getAddress());
+        globalPrepStmt.setString(3, invoiceReciever.getContact());
+        globalPrepStmt.setString(4, invoiceReciever.getPhone());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
+
+
+    }
+
+    @Override
+    public int addGoodsCategory(GoodsCategory goodsCategory) throws SQLException {
+        String sql = "INSERT INTO " + Table.GOODS_CATEGORIES + " (category, unitprice) VALUES (?, ?)";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setString(1, goodsCategory.getCategory());
+        globalPrepStmt.setDouble(2, goodsCategory.getUnitPrice());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
+    }
+
+    @Override
+    public int addAccount(Account account) throws SQLException {
+        String sql = "INSERT INTO " + Table.ACCOUNTS + " (account) VALUES (?)";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setString(1, account.getAccountName());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
+    }
+
 
     // PRIVATE DOMAIN
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,12 +229,11 @@ class DatabaseHandlerImpl extends DatabaseHandler {
         List<OrderDTO> orderDTOs = new ArrayList<>();
 
         openGlobalRecources();
-        doSimpleQuery(sql);
+        loadGlobalResultSet(sql);
 
         while (globalResutset.next()) {
             OrderDTO orderDTO = constructOrderDTO();
             orderDTOs.add(orderDTO);
-            System.out.println("Order added: " + orderDTO);
         }
 
         closeGlobalResources();
@@ -202,7 +241,7 @@ class DatabaseHandlerImpl extends DatabaseHandler {
     }
 
 
-    private void doSimpleQuery(String sql) throws SQLException {
+    private void loadGlobalResultSet(String sql) throws SQLException {
         globalStmt = globalConnection.createStatement();
         globalResutset = globalStmt.executeQuery(sql);
 
