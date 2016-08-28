@@ -62,7 +62,7 @@ public class GoodsCategoryPopupControllerAbstract extends AbstractPopupwindowCon
     }
 
     @FXML
-    private void v(){
+    private void handleCancelButtonClicked(){
         this.getStage().close();
     }
 
