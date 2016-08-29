@@ -1,9 +1,9 @@
 package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
-import com.peter.observ.InvoiceRecieverUpdateEvent;
-import com.peter.observ.Oberver;
-import com.peter.observ.UpdateEvent;
+import com.peter.controller.observ.InvoiceRecieverUpdateEvent;
+import com.peter.controller.observ.Oberver;
+import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;

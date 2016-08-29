@@ -2,8 +2,8 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.InitializableControllee;
 import com.peter.controller.maincontroller.MainController;
-import com.peter.observ.Oberver;
-import com.peter.observ.ObservableController;
+import com.peter.controller.observ.Oberver;
+import com.peter.controller.observ.ObservableController;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;

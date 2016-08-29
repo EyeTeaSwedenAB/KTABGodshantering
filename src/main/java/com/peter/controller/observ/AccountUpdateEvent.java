@@ -1,4 +1,4 @@
-package com.peter.observ;
+package com.peter.controller.observ;
 
 import java.util.List;
 

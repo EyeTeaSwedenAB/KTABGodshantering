@@ -3,8 +3,8 @@ package com.peter.controller.viewcontroller;
 import com.peter.controller.InitializableControllee;
 import com.peter.controller.Util;
 import com.peter.controller.maincontroller.MainController;
+import com.peter.controller.observ.*;
 import com.peter.dto.OrderDTO;
-import com.peter.observ.*;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -276,19 +276,13 @@ public class InputViewController implements InitializableControllee, Oberver {
             goodsCategoryComboBox.getItems().clear();
             goodsCategoryComboBox.getItems().addAll((List<String>) event.getObject());
             goodsCategoryComboBox.getSelectionModel().selectFirst();
-        }
-
-        else if (event instanceof AccountUpdateEvent){
+        } else if (event instanceof AccountUpdateEvent) {
             accountsCombobox.getItems().clear();
             accountsCombobox.getItems().addAll((List<String>) event.getObject());
             accountsCombobox.getSelectionModel().selectFirst();
         }
 
     }
-
-
-
-
 
 
     private class TaskCreator {
@@ -321,12 +315,7 @@ public class InputViewController implements InitializableControllee, Oberver {
                         tableView.getItems().clear();
                         tableView.getItems().addAll(mainController.getOrders(datePicker.getValue()));
 
-
-                        for (OrderDTO o : tableView.getItems())
-                            System.out.println(o.getId());
-
                         lastRecordDeleted = false;
-
 
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -340,8 +329,6 @@ public class InputViewController implements InitializableControllee, Oberver {
 
             task.setOnSucceeded(event -> {
                 infoLabel.setText("");
-                System.out.println("sendNewEntryAndUpdateTask closed");
-
             });
 
             return task;
@@ -375,7 +362,6 @@ public class InputViewController implements InitializableControllee, Oberver {
 
     }
 }
-
 
 
 
