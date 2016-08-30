@@ -19,14 +19,14 @@
                   <Menu mnemonicParsing="false" text="Lägg till">
                     <items>
                       <MenuItem fx:id="addInvoiceRecieverMenuItem" mnemonicParsing="false" onAction="#handeAddInvoiceReciever" text="Ny fakturamottagare" />
-                        <MenuItem fx:id="addGoodsCategoryMenuItem" mnemonicParsing="false" onAction="#handleAddGoodsCategory" text="Ny godstyp" />
+                        <MenuItem fx:id="addGoodsCategoryMenuItem" mnemonicParsing="false" onAction="#handleAddGoodsCategory" text="Ny godskategori" />
                         <MenuItem fx:id="addAccountMenuItem" mnemonicParsing="false" onAction="#handleAddAccount" text="Nytt kostnadsställe" />
                     </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="Ta bort">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#handleDeleteInvoiceReciever" text="Fakturamottagare" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteGoodsCategory" text="Godstyp" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteGoodsCategory" text="Godskategori" />
                         <MenuItem mnemonicParsing="false" onAction="#handleDeleteAccount" text="Kostnadsställe" />
                     </items>
                   </Menu>

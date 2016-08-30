@@ -21,7 +21,7 @@ public class MainApp extends Application {
         MainController mainController = new MainController();
         mainController.setLoginInformation("jdbc:mysql://ktabtest.cyzgfcxn1ubh.eu-central-1.rds.amazonaws.com:3306/KTABGoodsTest", "pebo0602", "PetBob82");
 
-        FXMLLoader containerViewLoader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        FXMLLoader containerViewLoader = new FXMLLoader(getClass().getResource("/fxml/ContainerView.fxml"));
         BorderPane containerView = containerViewLoader.load();
         ContainerControllerController containerViewController = containerViewLoader.getController();
         containerViewController.setMainController(mainController);

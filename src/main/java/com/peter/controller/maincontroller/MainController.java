@@ -94,6 +94,19 @@ public class MainController {
         return dataManager.deleteInvoiceReciever(selectedInvoiceReciever);
     }
 
+    public List<String> deleteGoodsCategory(String selectedGoodsCategory) throws SQLException {
+
+        return dataManager.deleteGoodsCategory(selectedGoodsCategory);
+    }
+
+    public List<String> deleteAccount(String selectedAccount) throws SQLException {
+        return dataManager.deleteAccount(selectedAccount);
+    }
+
+    public void sendUpdatedEntry(OrderDTO currentChangedOrderDTO) throws SQLException {
+        dataManager.sendUpdatedEntry(currentChangedOrderDTO);
+    }
+
 
     // PRIVATE DOMAIN
     ///////////////////////////////////////////////////////////////////////////////

@@ -57,7 +57,7 @@ class DatafetcherImpl extends Datafetcher {
         List<Account> accounts = new ArrayList<>();
 
         openGlobalRecources();
-        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.ACCOUNTS);
+        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.ACCOUNTS + " ORDER BY account ASC");
 
         while (globalResutset.next()) {
             accounts.add(new Account(globalResutset.getInt("id"), globalResutset.getString("account")));
@@ -72,7 +72,7 @@ class DatafetcherImpl extends Datafetcher {
     public List<InvoiceReciever> getAllInvoiceRecievers() throws SQLException {
         List<InvoiceReciever> invoiceRecievers = new ArrayList<>();
         openGlobalRecources();
-        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.INVOICE_RECIEVERS);
+        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.INVOICE_RECIEVERS + " ORDER BY company ASC");
 
         while (globalResutset.next())
             invoiceRecievers.add(new InvoiceReciever(globalResutset.getInt("id"),
@@ -91,7 +91,7 @@ class DatafetcherImpl extends Datafetcher {
 
         List<GoodsCategory> goodsCategories = new ArrayList<>();
         openGlobalRecources();
-        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.GOODS_CATEGORIES);
+        loadGlobalResultSetForSimpleQurey("SELECT * FROM " + Table.GOODS_CATEGORIES + " ORDER BY category ASC");
 
         while (globalResutset.next()) {
             goodsCategories.add(new GoodsCategory(
@@ -233,6 +233,55 @@ class DatafetcherImpl extends Datafetcher {
 
     }
 
+    @Override
+    public int deleteGoodsCategory(GoodsCategory goodsCategory) throws SQLException {
+
+        String sql = "DELETE FROM " + Table.GOODS_CATEGORIES + " WHERE id = ?";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setInt(1, goodsCategory.getId());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
+
+    }
+
+    @Override
+    public int deleteAccount(Account account) throws SQLException {
+        String sql = "DELETE FROM " + Table.ACCOUNTS + " WHERE id = ?";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setInt(1, account.getId());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
+
+    }
+
+    @Override
+    public int senUpdatedOrderDTO(RawOrderData chagedRawOrder) throws SQLException {
+        String sql = "UPDATE " + Table.ORDERS + " SET date = ?, invoicereciever_id = ?, accounts_id = ?, goodscategories_id = ? " +
+                " nounits = ?, totalprice = ?, comment = ? WHERE id = ?";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setString(1, chagedRawOrder.getDate());
+        globalPrepStmt.setInt(2, chagedRawOrder.getInvoiceRecieverId());
+        globalPrepStmt.setInt(3, chagedRawOrder.getAccountId());
+        globalPrepStmt.setInt(4, chagedRawOrder.getGoodsCategoryId());
+        globalPrepStmt.setInt(5, chagedRawOrder.getNoOfUnits());
+        globalPrepStmt.setDouble(6, chagedRawOrder.getTotalPrice());
+        globalPrepStmt.setString(7, chagedRawOrder.getComment());
+        globalPrepStmt.setInt(8, chagedRawOrder.getId());
+
+        int rowsaffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsaffected;
+
+
+
+
+
+    }
 
     // PRIVATE DOMAIN
     //////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,7 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
 import com.peter.controller.observ.AccountUpdateEvent;
-import com.peter.controller.observ.Oberver;
+import com.peter.controller.observ.ObserverForViewController;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -39,7 +39,7 @@ public class AddAccountPopupController extends AbstractPopupViewController {
                 List<String> newAccounts = this.getMainController().addAccount(account);
                 UpdateEvent updateEvent = new AccountUpdateEvent(newAccounts);
 
-                for (Oberver observer : this.getObervers()) {
+                for (ObserverForViewController observer : this.getObserverForViewControllers()) {
                     observer.update(updateEvent);
                 }
 

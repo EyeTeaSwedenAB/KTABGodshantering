@@ -9,6 +9,8 @@ public interface InitializableControllee {
     
     void setMainController(MainController mainController);
 
+    MainController getMainController();
+
     void init();
 
 }

@@ -1,16 +1,13 @@
 package com.peter.controller.viewcontroller;
 
-import com.peter.controller.InitializableControllee;
-import com.peter.controller.maincontroller.MainController;
 import com.peter.controller.popupviewcontroller.AbstractPopupViewController;
-import com.peter.controller.observ.Oberver;
+import com.peter.controller.observ.ObserverForViewController;
 import com.peter.controller.observ.ObservableController;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,22 +17,10 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class ContainerControllerController implements InitializableControllee, Oberver, ObservableController {
-    MainController mainController;
-    @FXML
-    private MenuItem addInvoiceRecieverMenuItem;
-    @FXML
-    private MenuItem addGoodsCategoryMenuItem;
-    @FXML
-    private MenuItem addAccountMenuItem;
+public class ContainerControllerController extends AbstractViewController implements ObserverForViewController, ObservableController {
 
+    private List<ObserverForViewController> observerForViewControllers = new ArrayList<>();
 
-    private List<Oberver> obervers = new ArrayList<>();
-
-    @Override
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
 
     @Override
     public void init() {
@@ -82,10 +67,22 @@ public class ContainerControllerController implements InitializableControllee, O
     }
 
     @FXML
-    private void handleDeleteGoodsCategory(){}
+    private void handleDeleteGoodsCategory(){
+        try {
+            showPopup("/fxml/DeleteGoodsCategoryPopup.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
-    private void handleDeleteAccount(){}
+    private void handleDeleteAccount(){
+        try {
+            showPopup("/fxml/DeleteAccountPopup.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     private void showPopup(String path) throws IOException {
@@ -99,7 +96,7 @@ public class ContainerControllerController implements InitializableControllee, O
         stage.setScene(new Scene(window));
 
 
-        popupView.setMainController(this.mainController);
+        popupView.setMainController(this.getMainController());
         popupView.addObserver(this);
         popupView.setStage(stage);
         popupView.init();
@@ -110,15 +107,15 @@ public class ContainerControllerController implements InitializableControllee, O
 
     @Override
     public void update(UpdateEvent event) {
-        for (Oberver oberver : obervers) {
-            oberver.update(event);
+        for (ObserverForViewController observerForViewController : observerForViewControllers) {
+            observerForViewController.update(event);
         }
 
     }
 
     @Override
-    public void addObserver(Oberver oberver) {
-        obervers.add(oberver);
+    public void addObserver(ObserverForViewController observerForViewController) {
+        observerForViewControllers.add(observerForViewController);
 
     }
 }

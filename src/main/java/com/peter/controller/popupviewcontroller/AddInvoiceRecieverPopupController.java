@@ -2,7 +2,7 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
 import com.peter.controller.observ.InvoiceRecieverUpdateEvent;
-import com.peter.controller.observ.Oberver;
+import com.peter.controller.observ.ObserverForViewController;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -48,9 +48,9 @@ public class AddInvoiceRecieverPopupController extends AbstractPopupViewControll
             try {
                 List<String> newInvoiceRecevers = this.getMainController().addNewInvoiceReciever(company, address, contact, phone);
 
-                for (Oberver oberver : this.getObervers()) {
+                for (ObserverForViewController observerForViewController : this.getObserverForViewControllers()) {
                     UpdateEvent<List<String>> updateEvent = new InvoiceRecieverUpdateEvent(newInvoiceRecevers);
-                    oberver.update(updateEvent);
+                    observerForViewController.update(updateEvent);
                 }
                 this.getStage().close();
 
@@ -72,7 +72,8 @@ public class AddInvoiceRecieverPopupController extends AbstractPopupViewControll
 
 
     private boolean isValidInput(String company, String address, String contact, String phone){
-        return company.length() != 0 && address.length() != 0 && contact.length() != 0 && phone.length() != 0;
+//        return company.length() != 0 && address.length() != 0 && contact.length() != 0 && phone.length() != 0;
+        return company.length() != 0;
     }
 
 }

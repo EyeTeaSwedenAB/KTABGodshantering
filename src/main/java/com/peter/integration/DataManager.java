@@ -32,6 +32,7 @@ public class DataManager {
 
 
     private List<OrderDTO> orderDTOs = new ArrayList<>();
+    private OrderDTO orderDTO;
 
     public DataManager() {
         datafetcher = Datafetcher.getNewInstance();
@@ -102,6 +103,12 @@ public class DataManager {
     }
 
 
+    public void sendUpdatedEntry(OrderDTO currentChangedOrderDTO) throws SQLException {
+        RawOrderData changedRawORder = convertToRawOrderData(currentChangedOrderDTO);
+        datafetcher.senUpdatedOrderDTO(changedRawORder);
+    }
+
+
     public double getUnitPrice(String goodsCategory) {
 
         GoodsCategory g = nameToGoodsCategoryMap.get(goodsCategory);
@@ -110,10 +117,10 @@ public class DataManager {
         return g.getUnitPrice();
     }
 
-
     public int deleteLastEntry() throws SQLException {
         return datafetcher.deleteLastEntry();
     }
+
 
     public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone) throws SQLException {
         InvoiceReciever invoiceReciever = new InvoiceReciever(0, company, address, contact, phone);
@@ -122,7 +129,6 @@ public class DataManager {
         return updateInvoiceRecieveMaps(newInvoiceRecivers);
     }
 
-
     public List<String> addAccount(String accountName) throws SQLException {
         Account account = new Account(0, accountName);
         datafetcher.addAccount(account);
@@ -130,6 +136,7 @@ public class DataManager {
         return updateAccountMaps(newAccounts);
 
     }
+
 
     public List<String> addGoodsGategory(String goodsCategory, double unitPrice) throws SQLException {
 
@@ -140,15 +147,35 @@ public class DataManager {
     }
 
 
-    // Private Domain
     public List<String> deleteInvoiceReciever(String selectedInvoiceReciever) throws SQLException {
+
         InvoiceReciever invoiceReciever = nameToInvoiceRecieverMap.get(selectedInvoiceReciever);
         datafetcher.deteleInvoiceReciever(invoiceReciever);
         List<InvoiceReciever> newInvoiceRecievers = datafetcher.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(newInvoiceRecievers);
     }
 
+    public List<String> deleteGoodsCategory(String selectedGoodsCategory) throws SQLException {
 
+        GoodsCategory goodsCategory = nameToGoodsCategoryMap.get(selectedGoodsCategory);
+
+        datafetcher.deleteGoodsCategory(goodsCategory);
+        List<GoodsCategory> newGoodsCategories = datafetcher.getAllGoodsCategories();
+        return updateGoodsCategorysMaps(newGoodsCategories);
+
+    }
+
+
+
+    public List<String> deleteAccount(String selectedAccount) throws SQLException {
+
+        Account account = nameToAccountMap.get(selectedAccount);
+        datafetcher.deleteAccount(account);
+        List<Account> newAccounts = datafetcher.getAllAccounts();
+        return updateAccountMaps(newAccounts);
+    }
+
+    /// / Private Domain
     ////////////////////////////////////////////////////////////////////////////////////
 
     private List<String> updateInvoiceRecieveMaps(List<InvoiceReciever> invoiceRecievers) {
@@ -198,6 +225,7 @@ public class DataManager {
     }
 
     private RawOrderData convertToRawOrderData(OrderDTO orderDTO) {
+        this.orderDTO = orderDTO;
 
         String date = orderDTO.getDate();
         int invoiceID = nameToInvoiceRecieverMap.get(orderDTO.getInvoiceReciever()).getId();

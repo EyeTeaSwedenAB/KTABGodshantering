@@ -1,8 +1,8 @@
 package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
+import com.peter.controller.observ.ObserverForViewController;
 import com.peter.controller.observ.GoodsCategoryUpdateEvent;
-import com.peter.controller.observ.Oberver;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -44,9 +44,9 @@ public class AddGoodsCategoryPopupController extends AbstractPopupViewController
                 double price = Double.parseDouble(unitPrice);
                 List<String> newGoodsCategories = newGoodsCategories = this.getMainController().addGoodsCategory(goodsCategory, price);
 
-                for (Oberver oberver : this.getObervers()) {
+                for (ObserverForViewController observerForViewController : this.getObserverForViewControllers()) {
                     UpdateEvent<List<String>> updateEvent = new GoodsCategoryUpdateEvent(newGoodsCategories);
-                    oberver.update(updateEvent);
+                    observerForViewController.update(updateEvent);
                 }
 
                 this.getStage().close();
@@ -61,7 +61,7 @@ public class AddGoodsCategoryPopupController extends AbstractPopupViewController
     }
 
     @FXML
-    private void handleCancelButtonClicked(){
+    private void handleCancelButtonClicked() {
         this.getStage().close();
     }
 
@@ -76,7 +76,6 @@ public class AddGoodsCategoryPopupController extends AbstractPopupViewController
 
         return goodsCategory.length() != 0;
     }
-
 
 
 }

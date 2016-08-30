@@ -5,7 +5,7 @@ package com.peter.controller.observ;
  */
 public interface ObservableController {
 
-    void addObserver(Oberver oberver);
+    void addObserver(ObserverForViewController observerForViewController);
 
 
 }

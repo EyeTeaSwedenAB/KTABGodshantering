@@ -41,6 +41,12 @@ public abstract class Datafetcher {
 
     public abstract int addGoodsCategory(GoodsCategory goodsCategory) throws SQLException;
 
+    public abstract int addAccount(Account account) throws SQLException;
+
+    public abstract int deteleInvoiceReciever(InvoiceReciever invoiceReciever) throws SQLException;
+
+    public abstract int deleteGoodsCategory(GoodsCategory goodsCategory) throws SQLException;
+
     public static Datafetcher getNewInstance() {
         return new DatafetcherImpl();
     }
@@ -49,7 +55,7 @@ public abstract class Datafetcher {
         return new DatafetcherImpl(url, credentials);
     }
 
-    public abstract int addAccount(Account account) throws SQLException;
+    public abstract int deleteAccount(Account account) throws SQLException;
 
-    public abstract int deteleInvoiceReciever(InvoiceReciever invoiceReciever) throws SQLException;
+    public abstract int senUpdatedOrderDTO(RawOrderData currentChangedOrderDTO) throws SQLException;
 }

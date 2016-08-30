@@ -1,8 +1,6 @@
 package com.peter.controller.viewcontroller;
 
-import com.peter.controller.InitializableControllee;
 import com.peter.controller.Util;
-import com.peter.controller.maincontroller.MainController;
 import com.peter.controller.observ.*;
 import com.peter.dto.OrderDTO;
 import javafx.collections.ObservableList;
@@ -19,7 +17,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class InputViewController implements InitializableControllee, Oberver {
+public class InputViewController extends AbstractViewController implements ObserverForViewController {
 
     @FXML
     private DatePicker datePicker;
@@ -79,7 +77,6 @@ public class InputViewController implements InitializableControllee, Oberver {
     private Label infoLabel;
 
 
-    private MainController mainController;
     private TaskCreator taskCreator = new TaskCreator();
     private boolean lastRecordDeleted = true;
 
@@ -90,15 +87,6 @@ public class InputViewController implements InitializableControllee, Oberver {
         }
     };
 
-
-    public MainController getMainController() {
-        return mainController;
-    }
-
-    @Override
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
 
     @Override
     public void init() {
@@ -131,11 +119,14 @@ public class InputViewController implements InitializableControllee, Oberver {
                 Thread thread = new Thread(currentTask);
                 thread.start();
 
+
+
             } else
                 Util.showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
 
         } else
-            Util.showAlert("Felinmatning", "Fältet \"Á pris\" kan endast innehålla numeriska värden", Alert.AlertType.ERROR);
+            Util.showAlert("Felinmatning", "Fältet \"Á pris\" kan endast innehålla numeriska värden\n" +
+                    "Fältet \"Antal\" måste vara större än 0", Alert.AlertType.ERROR);
 
     }
 
@@ -148,7 +139,7 @@ public class InputViewController implements InitializableControllee, Oberver {
             removedOrder = orderDTOs.remove(orderDTOs.size() - 1);
             try {
 
-                int rowsaffected = mainController.deleteLastEntry();
+                int rowsaffected = getMainController().deleteLastEntry();
                 System.out.println("Rows affected = " + rowsaffected);
                 lastRecordDeleted = true;
 
@@ -174,6 +165,8 @@ public class InputViewController implements InitializableControllee, Oberver {
             ex.printStackTrace();
             return false;
         }
+        if (noOfUnitsSpinner.getValue() <= 0)
+            return false;
         return true;
     }
 
@@ -193,17 +186,17 @@ public class InputViewController implements InitializableControllee, Oberver {
 
     private void populateComponents() {
 
-        if (mainController != null) {
+        if (getMainController() != null) {
             List<String> accounts = null;
             List<String> invoiceRecieverDTOs = null;
             List<String> goodsCategories = null;
             List<OrderDTO> orderDTOs = null;
 
             try {
-                accounts = mainController.getAllAccounts();
-                goodsCategories = mainController.getAllGoodsCategories();
-                invoiceRecieverDTOs = mainController.getAllInvoiceRecievers();
-                orderDTOs = mainController.getOrders(datePicker.getValue());
+                accounts = getMainController().getAllAccounts();
+                goodsCategories = getMainController().getAllGoodsCategories();
+                invoiceRecieverDTOs = getMainController().getAllInvoiceRecievers();
+                orderDTOs = getMainController().getOrders(datePicker.getValue());
 
 
             } catch (SQLException e) {
@@ -256,7 +249,7 @@ public class InputViewController implements InitializableControllee, Oberver {
     }
 
     private void updatePriceLables() {
-        double unitPrice = mainController.getUnitPrice(goodsCategoryComboBox.getValue());
+        double unitPrice = getMainController().getUnitPrice(goodsCategoryComboBox.getValue());
         int noOfUnits = noOfUnitsSpinner.getValue();
 
         unitPriceTextField.setText(Double.toString(unitPrice));
@@ -311,11 +304,12 @@ public class InputViewController implements InitializableControllee, Oberver {
                     newOrderDTO = new OrderDTO(0, date, invoiceReciever, accountDTO, goodsCatDTO, noOfUnits, unitPrice, totalPrice, comment);
 
                     try {
-                        mainController.sendNewEntry(newOrderDTO);
+                        getMainController().sendNewEntry(newOrderDTO);
                         tableView.getItems().clear();
-                        tableView.getItems().addAll(mainController.getOrders(datePicker.getValue()));
-
+                        tableView.getItems().addAll(getMainController().getOrders(datePicker.getValue()));
+                        noOfUnitsSpinner.getValueFactory().setValue(0);
                         lastRecordDeleted = false;
+
 
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -342,7 +336,7 @@ public class InputViewController implements InitializableControllee, Oberver {
                 protected Void call() throws Exception {
                     try {
                         tableView.getItems().clear();
-                        tableView.getItems().addAll(mainController.getOrders(datePicker.getValue()));
+                        tableView.getItems().addAll(getMainController().getOrders(datePicker.getValue()));
 
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -358,7 +352,6 @@ public class InputViewController implements InitializableControllee, Oberver {
 
             return task;
         }
-
 
     }
 }
