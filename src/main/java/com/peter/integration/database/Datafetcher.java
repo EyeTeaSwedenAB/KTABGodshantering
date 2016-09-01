@@ -57,5 +57,5 @@ public abstract class Datafetcher {
 
     public abstract int deleteAccount(Account account) throws SQLException;
 
-    public abstract int senUpdatedOrderDTO(RawOrderData currentChangedOrderDTO) throws SQLException;
+    public abstract int deleteEntry(OrderDTO selectedRow) throws SQLException;
 }

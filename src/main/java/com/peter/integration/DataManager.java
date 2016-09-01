@@ -103,12 +103,6 @@ public class DataManager {
     }
 
 
-    public void sendUpdatedEntry(OrderDTO currentChangedOrderDTO) throws SQLException {
-        RawOrderData changedRawORder = convertToRawOrderData(currentChangedOrderDTO);
-        datafetcher.senUpdatedOrderDTO(changedRawORder);
-    }
-
-
     public double getUnitPrice(String goodsCategory) {
 
         GoodsCategory g = nameToGoodsCategoryMap.get(goodsCategory);
@@ -237,5 +231,9 @@ public class DataManager {
 
         return new RawOrderData(0, date, invoiceID, accountID, goodsCatID, noOfUnits, totalPrice, comment);
 
+    }
+
+    public int deleteEntry(OrderDTO selectedRow) throws SQLException {
+        return datafetcher.deleteEntry(selectedRow);
     }
 }

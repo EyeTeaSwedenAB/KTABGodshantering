@@ -1,14 +1,21 @@
 package com.peter.startup;
 
-import java.time.LocalDate;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * Created by andreajacobsson on 2016-08-24.
  */
-public class Playground {
+public class Playground extends Application {
 
     public static void main(String[] args) {
 
-        Integer.parseInt("");
+
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
     }
 }

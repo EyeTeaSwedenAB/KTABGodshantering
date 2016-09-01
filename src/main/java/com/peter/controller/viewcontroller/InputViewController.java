@@ -3,6 +3,7 @@ package com.peter.controller.viewcontroller;
 import com.peter.controller.Util;
 import com.peter.controller.observ.*;
 import com.peter.dto.OrderDTO;
+import com.peter.view.AutoCompleteComboBoxListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class InputViewController extends AbstractViewController implements ObserverForViewController {
+public class InputViewController extends AbstractViewController implements ViewControllerObserver {
 
     @FXML
     private DatePicker datePicker;
@@ -80,6 +81,11 @@ public class InputViewController extends AbstractViewController implements Obser
     private TaskCreator taskCreator = new TaskCreator();
     private boolean lastRecordDeleted = true;
 
+    private List<String> accounts = null;
+    private List<String> invoiceRecieverDTOs = null;
+    private List<String> goodsCategories = null;
+    private List<OrderDTO> orderDTOs = null;
+
     private Task<Void> currentTask = new Task<Void>() {
         @Override
         protected Void call() throws Exception {
@@ -87,12 +93,14 @@ public class InputViewController extends AbstractViewController implements Obser
         }
     };
 
+    OrderDTO selectedRow = null;
+
 
     @Override
     public void init() {
 
         datePicker.setValue(LocalDate.now());
-        noOfUnitsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 300));
+        noOfUnitsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 3000));
         noOfUnitsSpinner.setEditable(true);
         unitPriceTextField.setEditable(false);
         sendButton.setDefaultButton(true);
@@ -120,12 +128,12 @@ public class InputViewController extends AbstractViewController implements Obser
                 thread.start();
 
 
-
             } else
                 Util.showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
 
         } else
-            Util.showAlert("Felinmatning", "Fältet \"Á pris\" kan endast innehålla numeriska värden\n" +
+            Util.showAlert("Felinmatning", "Samtliga fält måte innehålla värden! \n\n" +
+                    "Fältet \"Á pris\" kan endast innehålla numeriska värden\n" +
                     "Fältet \"Antal\" måste vara större än 0", Alert.AlertType.ERROR);
 
     }
@@ -154,8 +162,28 @@ public class InputViewController extends AbstractViewController implements Obser
 
     }
 
+    @FXML
+    private void handleDeleteSelected() {
+
+        if (selectedRow != null) {
+            try {
+                getMainController().deleOrder(selectedRow);
+                tableView.getItems().clear();
+                tableView.getItems().addAll(getMainController().getOrders(datePicker.getValue()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showDefaultDatabaseErrorAlert();
+            }
+        } else
+            Util.showAlert("Felaktigt val", "Du måste välja en rad arr ta bort först", Alert.AlertType.INFORMATION);
+    }
+
 
     private boolean isValidInputFields() {
+
+        if (invoiceRecieverCombobox.getValue() == null || accountsCombobox.getValue() == null || goodsCategoryComboBox.getValue() == null)
+            return false;
+
         try {
             Double.parseDouble(unitPriceTextField.getText());
         } catch (NumberFormatException e) {
@@ -167,6 +195,7 @@ public class InputViewController extends AbstractViewController implements Obser
         }
         if (noOfUnitsSpinner.getValue() <= 0)
             return false;
+
         return true;
     }
 
@@ -184,42 +213,40 @@ public class InputViewController extends AbstractViewController implements Obser
     }
 
 
-    private void populateComponents() {
-
+    public void loadInitialData() {
         if (getMainController() != null) {
-            List<String> accounts = null;
-            List<String> invoiceRecieverDTOs = null;
-            List<String> goodsCategories = null;
-            List<OrderDTO> orderDTOs = null;
 
             try {
                 accounts = getMainController().getAllAccounts();
                 goodsCategories = getMainController().getAllGoodsCategories();
                 invoiceRecieverDTOs = getMainController().getAllInvoiceRecievers();
-                orderDTOs = getMainController().getOrders(datePicker.getValue());
+                orderDTOs = getMainController().getOrders(LocalDate.now());
 
 
             } catch (SQLException e) {
                 e.printStackTrace();
                 showDefaultDatabaseErrorAlert();
             }
-
-            invoiceRecieverCombobox.getItems().addAll(invoiceRecieverDTOs);
-            invoiceRecieverCombobox.getSelectionModel().selectFirst();
-
-            goodsCategoryComboBox.getItems().addAll(goodsCategories);
-            goodsCategoryComboBox.getSelectionModel().selectFirst();
-
-            accountsCombobox.getItems().addAll(accounts);
-            accountsCombobox.getSelectionModel().selectFirst();
-
-            tableView.getItems().addAll(orderDTOs);
-
         } else System.err.println("Maincontroller not set!");
+
+    }
+
+
+    private void populateComponents() {
+
+        invoiceRecieverCombobox.getItems().addAll(invoiceRecieverDTOs);
+        goodsCategoryComboBox.getItems().addAll(goodsCategories);
+        accountsCombobox.getItems().addAll(accounts);
+        tableView.getItems().addAll(orderDTOs);
+
+
     }
 
 
     private void setUpListeners() {
+
+
+        new AutoCompleteComboBoxListener(invoiceRecieverCombobox);
 
         goodsCategoryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             updatePriceLables();
@@ -239,6 +266,11 @@ public class InputViewController extends AbstractViewController implements Obser
                 thread.start();
             } else
                 Util.showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
+        });
+
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedRow = newValue;
+
         });
 
 
@@ -263,16 +295,14 @@ public class InputViewController extends AbstractViewController implements Obser
         if (event instanceof InvoiceRecieverUpdateEvent) {
             invoiceRecieverCombobox.getItems().clear();
             invoiceRecieverCombobox.getItems().addAll((List<String>) event.getObject());
-            invoiceRecieverCombobox.getSelectionModel().selectFirst();
 
         } else if (event instanceof GoodsCategoryUpdateEvent) {
             goodsCategoryComboBox.getItems().clear();
             goodsCategoryComboBox.getItems().addAll((List<String>) event.getObject());
-            goodsCategoryComboBox.getSelectionModel().selectFirst();
+
         } else if (event instanceof AccountUpdateEvent) {
             accountsCombobox.getItems().clear();
             accountsCombobox.getItems().addAll((List<String>) event.getObject());
-            accountsCombobox.getSelectionModel().selectFirst();
         }
 
     }
@@ -307,8 +337,6 @@ public class InputViewController extends AbstractViewController implements Obser
                         getMainController().sendNewEntry(newOrderDTO);
                         tableView.getItems().clear();
                         tableView.getItems().addAll(getMainController().getOrders(datePicker.getValue()));
-                        noOfUnitsSpinner.getValueFactory().setValue(0);
-                        lastRecordDeleted = false;
 
 
                     } catch (SQLException e) {
@@ -323,6 +351,13 @@ public class InputViewController extends AbstractViewController implements Obser
 
             task.setOnSucceeded(event -> {
                 infoLabel.setText("");
+                updatePriceLables();
+                lastRecordDeleted = false;
+                noOfUnitsSpinner.getValueFactory().setValue(0);
+                invoiceRecieverCombobox.getSelectionModel().select(null);
+                accountsCombobox.getSelectionModel().select(null);
+                goodsCategoryComboBox.getSelectionModel().select(null);
+                commentsTextField.setText("");
             });
 
             return task;

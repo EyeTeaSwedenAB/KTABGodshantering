@@ -3,7 +3,7 @@ package com.peter.controller.popupviewcontroller;
 import com.peter.controller.Util;
 import com.peter.controller.observ.GoodsCategoryUpdateEvent;
 import com.peter.controller.observ.UpdateEvent;
-import com.peter.controller.observ.ObserverForViewController;
+import com.peter.controller.observ.ViewControllerObserver;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-29.
  */
-public class DeleteGoodsCategoryPopupController extends AbstractPopupViewController {
+public class DeleteGoodsCategoryPopupViewController extends AbstractPopupViewViewController {
 
     @FXML
     private ListView<String> goodsCategoryListView;
@@ -37,7 +37,7 @@ public class DeleteGoodsCategoryPopupController extends AbstractPopupViewControl
                 List<String> newGoodsCategories = getMainController().deleteGoodsCategory(selectedGoodsCategory);
 
                 UpdateEvent<List<String>> updateEvent = new GoodsCategoryUpdateEvent(newGoodsCategories);
-                for (ObserverForViewController observer : getObserverForViewControllers())
+                for (ViewControllerObserver observer : getViewControllerObservers())
                     observer.update(updateEvent);
 
                 Util.showAlert("Följande godskategori togs bort", selectedGoodsCategory.toUpperCase(), Alert.AlertType.CONFIRMATION);

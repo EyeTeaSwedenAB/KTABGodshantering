@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="322.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.peter.controller.viewcontroller.WelcomeViewController">
+   <children>
+      <Label layoutX="64.0" layoutY="64.0" text="KTAB Godshantering" textFill="#b52222">
+         <font>
+            <Font size="50.0" />
+         </font>
+      </Label>
+      <ProgressBar fx:id="progressBar" layoutX="64.0" layoutY="235.0" prefHeight="10.0" prefWidth="481.0" progress="0.05" />
+      <Label layoutX="64.0" layoutY="209.0" text="Laddar resurser">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

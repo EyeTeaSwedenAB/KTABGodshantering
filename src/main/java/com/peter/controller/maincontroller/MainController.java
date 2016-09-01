@@ -103,8 +103,8 @@ public class MainController {
         return dataManager.deleteAccount(selectedAccount);
     }
 
-    public void sendUpdatedEntry(OrderDTO currentChangedOrderDTO) throws SQLException {
-        dataManager.sendUpdatedEntry(currentChangedOrderDTO);
+    public void deleOrder(OrderDTO selectedRow) throws SQLException {
+        dataManager.deleteEntry(selectedRow);
     }
 
 

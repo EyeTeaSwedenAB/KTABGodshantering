@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+              <MenuBar>
+                  <menus>
+                      <Menu mnemonicParsing="false" text="Arkiv">
+                          <items>
+                              <MenuItem mnemonicParsing="false" text="Close" />
+                          </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Redigera">
+                     <items>
+                        <Menu mnemonicParsing="false" text="Lägg till">
+                          <items>
+                            <MenuItem fx:id="addInvoiceRecieverMenuItem" mnemonicParsing="false" onAction="#handeAddInvoiceReciever" text="Ny fakturamottagare" />
+                              <MenuItem fx:id="addGoodsCategoryMenuItem" mnemonicParsing="false" onAction="#handleAddGoodsCategory" text="Ny godskategori" />
+                              <MenuItem fx:id="addAccountMenuItem" mnemonicParsing="false" onAction="#handleAddAccount" text="Nytt kostnadsställe" />
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Ta bort">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#handleDeleteInvoiceReciever" text="Fakturamottagare" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleDeleteGoodsCategory" text="Godskategori" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleDeleteAccount" text="Kostnadsställe" />
+                          </items>
+                        </Menu>
+                     </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Hjälp">
+                          <items>
+                              <MenuItem mnemonicParsing="false" text="About" />
+                          </items>
+                      </Menu>
+                  </menus>
+              </MenuBar>
+            <HBox prefHeight="40.0" prefWidth="200.0" spacing="20.0" style="-fx-border-width: 10px;">
+               <children>
+                  <Button mnemonicParsing="false" text="VIsa resultat" />
+                  <Button mnemonicParsing="false" text="Lägg till" />
+                  <Button mnemonicParsing="false" text="Statistik" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="10.0" top="15.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+    </top>
+</fx:root>

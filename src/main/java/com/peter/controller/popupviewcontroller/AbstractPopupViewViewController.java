@@ -2,8 +2,8 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.InitializableControllee;
 import com.peter.controller.maincontroller.MainController;
-import com.peter.controller.observ.ObserverForViewController;
-import com.peter.controller.observ.ObservableController;
+import com.peter.controller.observ.ObservableViewController;
+import com.peter.controller.observ.ViewControllerObserver;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -12,11 +12,11 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-28.
  */
-public abstract class AbstractPopupViewController implements ObservableController, InitializableControllee {
+public abstract class AbstractPopupViewViewController implements ObservableViewController, InitializableControllee {
 
 
     private MainController mainController;
-    private List<ObserverForViewController> observerForViewControllers = new ArrayList<>();
+    private List<ViewControllerObserver> viewControllerObservers = new ArrayList<>();
     private Stage stage;
 
     @Override
@@ -31,8 +31,8 @@ public abstract class AbstractPopupViewController implements ObservableControlle
         this.mainController = mainController;
     }
 
-    public List<ObserverForViewController> getObserverForViewControllers() {
-        return observerForViewControllers;
+    public List<ViewControllerObserver> getViewControllerObservers() {
+        return viewControllerObservers;
     }
 
     public Stage getStage() {
@@ -44,7 +44,7 @@ public abstract class AbstractPopupViewController implements ObservableControlle
     }
 
     @Override
-    public void addObserver(ObserverForViewController observerForViewController) {
-        observerForViewControllers.add(observerForViewController);
+    public void addObserver(ViewControllerObserver viewControllerObserver) {
+        viewControllerObservers.add(viewControllerObserver);
     }
 }

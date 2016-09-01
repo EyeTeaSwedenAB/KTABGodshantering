@@ -1,8 +1,8 @@
 package com.peter.controller.viewcontroller;
 
-import com.peter.controller.popupviewcontroller.AbstractPopupViewController;
-import com.peter.controller.observ.ObserverForViewController;
-import com.peter.controller.observ.ObservableController;
+import com.peter.controller.popupviewcontroller.AbstractPopupViewViewController;
+import com.peter.controller.observ.ViewControllerObserver;
+import com.peter.controller.observ.ObservableViewController;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,9 +17,9 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class ContainerControllerController extends AbstractViewController implements ObserverForViewController, ObservableController {
+public class ContainerViewViewController extends AbstractViewController implements ViewControllerObserver, ObservableViewController {
 
-    private List<ObserverForViewController> observerForViewControllers = new ArrayList<>();
+    private List<ViewControllerObserver> viewControllerObservers = new ArrayList<>();
 
 
     @Override
@@ -31,7 +31,7 @@ public class ContainerControllerController extends AbstractViewController implem
     @FXML
     private void handeAddInvoiceReciever() {
         try {
-            showPopup("/fxml/AddInvoiceRecieverPopup.fxml");
+            showPopup("/fxml/popup/AddInvoiceRecieverPopup.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,7 +40,7 @@ public class ContainerControllerController extends AbstractViewController implem
     @FXML
     private void handleAddGoodsCategory() {
         try {
-            showPopup("/fxml/AddGoodsCategoryPopup.fxml");
+            showPopup("/fxml/popup/AddGoodsCategoryPopup.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,7 +50,7 @@ public class ContainerControllerController extends AbstractViewController implem
     @FXML
     private void handleAddAccount() {
         try {
-            showPopup("/fxml/AddAccountPopup.fxml");
+            showPopup("/fxml/popup/AddAccountPopup.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +60,7 @@ public class ContainerControllerController extends AbstractViewController implem
     private void handleDeleteInvoiceReciever(){
 
         try {
-            showPopup("/fxml/DeleteInvoiceRecieverPopup.fxml");
+            showPopup("/fxml/popup/DeleteInvoiceRecieverPopup.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,7 +69,7 @@ public class ContainerControllerController extends AbstractViewController implem
     @FXML
     private void handleDeleteGoodsCategory(){
         try {
-            showPopup("/fxml/DeleteGoodsCategoryPopup.fxml");
+            showPopup("/fxml/popup/DeleteGoodsCategoryPopup.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +78,7 @@ public class ContainerControllerController extends AbstractViewController implem
     @FXML
     private void handleDeleteAccount(){
         try {
-            showPopup("/fxml/DeleteAccountPopup.fxml");
+            showPopup("/fxml/popup/DeleteAccountPopup.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,16 +90,16 @@ public class ContainerControllerController extends AbstractViewController implem
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         Parent window = loader.load();
-        AbstractPopupViewController popupView = loader.getController();
+        AbstractPopupViewViewController popupViewController = loader.getController();
 
         Stage stage = new Stage();
         stage.setScene(new Scene(window));
 
 
-        popupView.setMainController(this.getMainController());
-        popupView.addObserver(this);
-        popupView.setStage(stage);
-        popupView.init();
+        popupViewController.setMainController(this.getMainController());
+        popupViewController.addObserver(this);
+        popupViewController.setStage(stage);
+        popupViewController.init();
         stage.show();
 
     }
@@ -107,15 +107,15 @@ public class ContainerControllerController extends AbstractViewController implem
 
     @Override
     public void update(UpdateEvent event) {
-        for (ObserverForViewController observerForViewController : observerForViewControllers) {
-            observerForViewController.update(event);
+        for (ViewControllerObserver viewControllerObserver : viewControllerObservers) {
+            viewControllerObserver.update(event);
         }
 
     }
 
     @Override
-    public void addObserver(ObserverForViewController observerForViewController) {
-        observerForViewControllers.add(observerForViewController);
+    public void addObserver(ViewControllerObserver viewControllerObserver) {
+        viewControllerObservers.add(viewControllerObserver);
 
     }
 }

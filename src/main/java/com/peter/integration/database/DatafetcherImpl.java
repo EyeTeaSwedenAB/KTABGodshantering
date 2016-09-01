@@ -16,10 +16,10 @@ import java.util.List;
  */
 class DatafetcherImpl extends Datafetcher {
 
-    Connection globalConnection;
-    Statement globalStmt;
-    PreparedStatement globalPrepStmt;
-    ResultSet globalResutset;
+    private Connection globalConnection;
+    private Statement globalStmt;
+    private PreparedStatement globalPrepStmt;
+    private ResultSet globalResutset;
 
     private Credentials credentials;
     private String url;
@@ -258,32 +258,21 @@ class DatafetcherImpl extends Datafetcher {
 
     }
 
+
+
     @Override
-    public int senUpdatedOrderDTO(RawOrderData chagedRawOrder) throws SQLException {
-        String sql = "UPDATE " + Table.ORDERS + " SET date = ?, invoicereciever_id = ?, accounts_id = ?, goodscategories_id = ? " +
-                " nounits = ?, totalprice = ?, comment = ? WHERE id = ?";
+    public int deleteEntry(OrderDTO selectedRow) throws SQLException {
+        System.out.println("Order id = " + selectedRow.getId());
+        String sql = "DELETE FROM " + Table.ORDERS + " WHERE id = ?";
         openGlobalRecources();
         globalPrepStmt = globalConnection.prepareStatement(sql);
-        globalPrepStmt.setString(1, chagedRawOrder.getDate());
-        globalPrepStmt.setInt(2, chagedRawOrder.getInvoiceRecieverId());
-        globalPrepStmt.setInt(3, chagedRawOrder.getAccountId());
-        globalPrepStmt.setInt(4, chagedRawOrder.getGoodsCategoryId());
-        globalPrepStmt.setInt(5, chagedRawOrder.getNoOfUnits());
-        globalPrepStmt.setDouble(6, chagedRawOrder.getTotalPrice());
-        globalPrepStmt.setString(7, chagedRawOrder.getComment());
-        globalPrepStmt.setInt(8, chagedRawOrder.getId());
-
-        int rowsaffected = globalPrepStmt.executeUpdate();
+        globalPrepStmt.setInt(1, selectedRow.getId());
+        int rowsAffected = globalPrepStmt.executeUpdate();
         closeGlobalResources();
-        return rowsaffected;
-
-
-
-
-
+        return rowsAffected;
     }
 
-    // PRIVATE DOMAIN
+// PRIVATE DOMAIN
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

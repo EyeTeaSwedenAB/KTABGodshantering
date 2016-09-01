@@ -1,7 +1,7 @@
 package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
-import com.peter.controller.observ.ObserverForViewController;
+import com.peter.controller.observ.ViewControllerObserver;
 import com.peter.controller.observ.GoodsCategoryUpdateEvent;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-28.
  */
-public class AddGoodsCategoryPopupController extends AbstractPopupViewController {
+public class AddGoodsCategoryPopupViewController extends AbstractPopupViewViewController {
 
 
     @FXML
@@ -44,9 +44,9 @@ public class AddGoodsCategoryPopupController extends AbstractPopupViewController
                 double price = Double.parseDouble(unitPrice);
                 List<String> newGoodsCategories = newGoodsCategories = this.getMainController().addGoodsCategory(goodsCategory, price);
 
-                for (ObserverForViewController observerForViewController : this.getObserverForViewControllers()) {
+                for (ViewControllerObserver viewControllerObserver : this.getViewControllerObservers()) {
                     UpdateEvent<List<String>> updateEvent = new GoodsCategoryUpdateEvent(newGoodsCategories);
-                    observerForViewController.update(updateEvent);
+                    viewControllerObserver.update(updateEvent);
                 }
 
                 this.getStage().close();
