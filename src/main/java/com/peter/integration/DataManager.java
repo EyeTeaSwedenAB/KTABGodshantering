@@ -86,22 +86,25 @@ public class DataManager {
 
     public List<OrderDTO> getOrders(int limit) throws SQLException {
 
-        List<OrderDTO> orderDTOs = datafetcher.fetchOrders(limit);
-        return orderDTOs;
+        return datafetcher.fetchOrders(limit);
     }
 
     public List<OrderDTO> getOrders(LocalDate localDate) throws SQLException {
 
-        List<OrderDTO> orderDTOs = datafetcher.fetchOrders(localDate.toString());
-        return orderDTOs;
+        return datafetcher.fetchOrders(localDate.toString());
     }
+
+    public List<OrderDTO> getOrders(LocalDate start, LocalDate end) throws SQLException {
+
+        return datafetcher.fetchOrders(start.toString(), end.toString());
+    }
+
 
     public int sendNewEntry(OrderDTO orderDTO) throws SQLException {
 
         RawOrderData rawOrderData = convertToRawOrderData(orderDTO);
         return datafetcher.sendNewEntry(rawOrderData);
     }
-
 
     public double getUnitPrice(String goodsCategory) {
 
@@ -111,10 +114,10 @@ public class DataManager {
         return g.getUnitPrice();
     }
 
+
     public int deleteLastEntry() throws SQLException {
         return datafetcher.deleteLastEntry();
     }
-
 
     public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone) throws SQLException {
         InvoiceReciever invoiceReciever = new InvoiceReciever(0, company, address, contact, phone);
@@ -122,6 +125,7 @@ public class DataManager {
         List<InvoiceReciever> newInvoiceRecivers = datafetcher.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(newInvoiceRecivers);
     }
+
 
     public List<String> addAccount(String accountName) throws SQLException {
         Account account = new Account(0, accountName);
@@ -140,7 +144,6 @@ public class DataManager {
         return updateGoodsCategorysMaps(newGoodsCategories);
     }
 
-
     public List<String> deleteInvoiceReciever(String selectedInvoiceReciever) throws SQLException {
 
         InvoiceReciever invoiceReciever = nameToInvoiceRecieverMap.get(selectedInvoiceReciever);
@@ -148,6 +151,7 @@ public class DataManager {
         List<InvoiceReciever> newInvoiceRecievers = datafetcher.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(newInvoiceRecievers);
     }
+
 
     public List<String> deleteGoodsCategory(String selectedGoodsCategory) throws SQLException {
 
@@ -158,8 +162,6 @@ public class DataManager {
         return updateGoodsCategorysMaps(newGoodsCategories);
 
     }
-
-
 
     public List<String> deleteAccount(String selectedAccount) throws SQLException {
 
@@ -211,7 +213,7 @@ public class DataManager {
 
         for (Account account : accounts) {
             nameToAccountMap.put(account.getAccountName(), account);
-            accountToIdMap.put(account,account.getId());
+            accountToIdMap.put(account, account.getId());
             accountsAsStrings.add(account.getAccountName());
         }
 
@@ -228,8 +230,9 @@ public class DataManager {
         int noOfUnits = orderDTO.getNoOfUnits();
         double totalPrice = orderDTO.getTotalPrice();
         String comment = orderDTO.getComment();
+        int invoiceSent = orderDTO.getInvoiceSent();
 
-        return new RawOrderData(0, date, invoiceID, accountID, goodsCatID, noOfUnits, totalPrice, comment);
+        return new RawOrderData(0, date, invoiceID, accountID, goodsCatID, noOfUnits, totalPrice, comment, invoiceSent);
 
     }
 

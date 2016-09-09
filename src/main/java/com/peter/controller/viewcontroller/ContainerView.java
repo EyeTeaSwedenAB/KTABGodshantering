@@ -1,7 +1,7 @@
 package com.peter.controller.viewcontroller;
 
 import com.peter.controller.popupviewcontroller.AbstractPopupViewViewController;
-import com.peter.controller.observ.ViewControllerObserver;
+import com.peter.controller.observ.Observer;
 import com.peter.controller.observ.ObservableViewController;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
@@ -17,9 +17,9 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class ContainerViewViewController extends AbstractViewController implements ViewControllerObserver, ObservableViewController {
+public class ContainerView extends AbstractViewController implements Observer, ObservableViewController {
 
-    private List<ViewControllerObserver> viewControllerObservers = new ArrayList<>();
+    private List<Observer> observers = new ArrayList<>();
 
 
     @Override
@@ -84,6 +84,21 @@ public class ContainerViewViewController extends AbstractViewController implemen
         }
     }
 
+    @FXML
+    private void handleAdd(){
+        getMainApp().changeView("inputView");
+    }
+
+    @FXML
+    private void handleShowSummary(){
+        getMainApp().changeView("summaryView");
+    }
+
+    @FXML
+    private void handleShowStats(){
+        getMainApp().changeView("statsView");
+    }
+
 
     private void showPopup(String path) throws IOException {
 
@@ -107,15 +122,15 @@ public class ContainerViewViewController extends AbstractViewController implemen
 
     @Override
     public void update(UpdateEvent event) {
-        for (ViewControllerObserver viewControllerObserver : viewControllerObservers) {
-            viewControllerObserver.update(event);
+        for (Observer observer : observers) {
+            observer.update(event);
         }
 
     }
 
     @Override
-    public void addObserver(ViewControllerObserver viewControllerObserver) {
-        viewControllerObservers.add(viewControllerObserver);
+    public void addObserver(Observer observer) {
+        observers.add(observer);
 
     }
 }

@@ -45,11 +45,11 @@
                       </Menu>
                   </menus>
               </MenuBar>
-            <HBox prefHeight="40.0" prefWidth="200.0" spacing="20.0" style="-fx-border-width: 10px;">
+            <HBox prefHeight="40.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" text="VIsa resultat" />
-                  <Button mnemonicParsing="false" text="Lägg till" />
-                  <Button mnemonicParsing="false" text="Statistik" />
+                  <Button mnemonicParsing="false" onAction="#handleAdd" text="Lägg till" />
+                  <Button mnemonicParsing="false" onAction="#handleShowSummary" text="Summera" />
+                  <Button mnemonicParsing="false" onAction="#handleShowStats" text="Statistik" />
                </children>
                <padding>
                   <Insets bottom="15.0" left="10.0" top="15.0" />

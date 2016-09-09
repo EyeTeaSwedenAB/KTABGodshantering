@@ -2,7 +2,7 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
 import com.peter.controller.observ.InvoiceRecieverUpdateEvent;
-import com.peter.controller.observ.ViewControllerObserver;
+import com.peter.controller.observ.Observer;
 import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -48,9 +48,9 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
             try {
                 List<String> newInvoiceRecevers = this.getMainController().addNewInvoiceReciever(company, address, contact, phone);
 
-                for (ViewControllerObserver viewControllerObserver : this.getViewControllerObservers()) {
+                for (Observer observer : this.getObservers()) {
                     UpdateEvent<List<String>> updateEvent = new InvoiceRecieverUpdateEvent(newInvoiceRecevers);
-                    viewControllerObserver.update(updateEvent);
+                    observer.update(updateEvent);
                 }
                 this.getStage().close();
 

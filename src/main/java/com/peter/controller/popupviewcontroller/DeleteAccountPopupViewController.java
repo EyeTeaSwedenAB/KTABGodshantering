@@ -3,7 +3,7 @@ package com.peter.controller.popupviewcontroller;
 import com.peter.controller.Util;
 import com.peter.controller.observ.AccountUpdateEvent;
 import com.peter.controller.observ.UpdateEvent;
-import com.peter.controller.observ.ViewControllerObserver;
+import com.peter.controller.observ.Observer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
@@ -39,7 +39,7 @@ public class DeleteAccountPopupViewController extends AbstractPopupViewViewContr
 
                 Util.showAlert("Följande godskategori togs bort", selectedAccount.toUpperCase(), Alert.AlertType.CONFIRMATION);
 
-                for (ViewControllerObserver observer : getViewControllerObservers())
+                for (Observer observer : getObservers())
                     observer.update(updateEvent);
 
                 this.getStage().close();

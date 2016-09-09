@@ -31,6 +31,8 @@ public abstract class Datafetcher {
 
     public abstract List<OrderDTO> fetchOrders(String date) throws SQLException;
 
+    public abstract List<OrderDTO> fetchOrders(String startDate, String endDate) throws SQLException;
+
     public abstract int sendNewEntry(RawOrderData rawOrderData) throws SQLException;
 
     public abstract int deleteLastEntry() throws SQLException;
@@ -58,4 +60,5 @@ public abstract class Datafetcher {
     public abstract int deleteAccount(Account account) throws SQLException;
 
     public abstract int deleteEntry(OrderDTO selectedRow) throws SQLException;
+
 }

@@ -107,7 +107,7 @@ class DatafetcherImpl extends Datafetcher {
     public List<OrderDTO> fetchOrders(int limit) throws SQLException {
 
 
-        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment " +
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.invoice_sent " +
                 "FROM orders " +
                 "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
                 "JOIN accounts ON orders.accounts_id = accounts.id " +
@@ -117,15 +117,13 @@ class DatafetcherImpl extends Datafetcher {
         if (limit != -1)
             sql = sql + " LIMIT " + limit;
 
-        List<OrderDTO> orderDTOs = executeFetchOrders(sql);
-
-        return orderDTOs;
+        return executeFetchOrders(sql);
     }
 
     @Override
     public List<OrderDTO> fetchOrders(String date) throws SQLException {
 
-        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment " +
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.invoice_sent " +
                 "FROM orders " +
                 "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
                 "JOIN accounts ON orders.accounts_id = accounts.id " +
@@ -133,11 +131,22 @@ class DatafetcherImpl extends Datafetcher {
                 "WHERE orders.date = '" + date + "' " +
                 "ORDER BY orders.id ASC";
 
-        List<OrderDTO> orderDTOs = executeFetchOrders(sql);
-
-        return orderDTOs;
+        return executeFetchOrders(sql);
 
 
+    }
+
+    @Override
+    public List<OrderDTO> fetchOrders(String startDate, String endDate) throws SQLException {
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.invoice_sent " +
+                "FROM orders " +
+                "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
+                "JOIN accounts ON orders.accounts_id = accounts.id " +
+                "JOIN goodscategories ON orders.goodscategories_id = goodscategories.id " +
+                "WHERE orders.date >= '" + startDate + "' " + "AND orders.date <= '" + endDate + "'" +
+                "ORDER BY orders.id ASC";
+
+        return executeFetchOrders(sql);
     }
 
     @Override
@@ -259,7 +268,6 @@ class DatafetcherImpl extends Datafetcher {
     }
 
 
-
     @Override
     public int deleteEntry(OrderDTO selectedRow) throws SQLException {
         System.out.println("Order id = " + selectedRow.getId());
@@ -272,7 +280,8 @@ class DatafetcherImpl extends Datafetcher {
         return rowsAffected;
     }
 
-// PRIVATE DOMAIN
+
+    // PRIVATE DOMAIN
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -351,7 +360,8 @@ class DatafetcherImpl extends Datafetcher {
                 globalResutset.getInt("nounits"),
                 globalResutset.getDouble("unitprice"),
                 globalResutset.getDouble("totalprice"),
-                globalResutset.getString("comment"));
+                globalResutset.getString("comment"),
+                globalResutset.getInt("invoice_sent"));
 
     }
 }

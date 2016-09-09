@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class InputViewController extends AbstractViewController implements ViewControllerObserver {
+public class Input extends AbstractViewController implements Observer {
 
     @FXML
     private DatePicker datePicker;
@@ -331,7 +331,7 @@ public class InputViewController extends AbstractViewController implements ViewC
                     String comment = commentsTextField.getText();
 
 
-                    newOrderDTO = new OrderDTO(0, date, invoiceReciever, accountDTO, goodsCatDTO, noOfUnits, unitPrice, totalPrice, comment);
+                    newOrderDTO = new OrderDTO(0, date, invoiceReciever, accountDTO, goodsCatDTO, noOfUnits, unitPrice, totalPrice, comment, 0);
 
                     try {
                         getMainController().sendNewEntry(newOrderDTO);

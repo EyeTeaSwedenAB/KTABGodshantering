@@ -2,10 +2,13 @@ package com.peter.controller.maincontroller;
 
 import com.peter.dto.OrderDTO;
 import com.peter.integration.DataManager;
+import com.peter.dto.OrderSummaryDTO;
+import com.peter.model.business.data.Summarizer;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by andreajacobsson on 2016-08-22.
@@ -13,10 +16,12 @@ import java.util.List;
 public class MainController {
 
     private DataManager dataManager;
+    private Summarizer summarizer;
 
     public MainController() {
 
         dataManager = new DataManager();
+        summarizer = new Summarizer();
     }
 
     public MainController(String url, String userName, String password) {
@@ -107,6 +112,10 @@ public class MainController {
         dataManager.deleteEntry(selectedRow);
     }
 
+    public Map<String, OrderSummaryDTO> getSummary(LocalDate start, LocalDate end) throws SQLException {
+
+        return summarizer.summarize(dataManager.getOrders(start, end));
+    }
 
     // PRIVATE DOMAIN
     ///////////////////////////////////////////////////////////////////////////////

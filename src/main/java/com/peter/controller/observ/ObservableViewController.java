@@ -5,7 +5,7 @@ package com.peter.controller.observ;
  */
 public interface ObservableViewController {
 
-    void addObserver(ViewControllerObserver viewControllerObserver);
+    void addObserver(Observer observer);
 
 
 }

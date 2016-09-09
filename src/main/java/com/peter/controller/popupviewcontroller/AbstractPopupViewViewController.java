@@ -3,7 +3,7 @@ package com.peter.controller.popupviewcontroller;
 import com.peter.controller.InitializableControllee;
 import com.peter.controller.maincontroller.MainController;
 import com.peter.controller.observ.ObservableViewController;
-import com.peter.controller.observ.ViewControllerObserver;
+import com.peter.controller.observ.Observer;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public abstract class AbstractPopupViewViewController implements ObservableViewC
 
 
     private MainController mainController;
-    private List<ViewControllerObserver> viewControllerObservers = new ArrayList<>();
+    private List<Observer> observers = new ArrayList<>();
     private Stage stage;
 
     @Override
@@ -31,8 +31,8 @@ public abstract class AbstractPopupViewViewController implements ObservableViewC
         this.mainController = mainController;
     }
 
-    public List<ViewControllerObserver> getViewControllerObservers() {
-        return viewControllerObservers;
+    public List<Observer> getObservers() {
+        return observers;
     }
 
     public Stage getStage() {
@@ -44,7 +44,7 @@ public abstract class AbstractPopupViewViewController implements ObservableViewC
     }
 
     @Override
-    public void addObserver(ViewControllerObserver viewControllerObserver) {
-        viewControllerObservers.add(viewControllerObserver);
+    public void addObserver(Observer observer) {
+        observers.add(observer);
     }
 }
