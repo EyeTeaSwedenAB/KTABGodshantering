@@ -1,5 +1,6 @@
 package com.peter.dto;
 
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,15 @@ import java.util.List;
 public class OrderSummaryDTO {
 
     private final List<OrderDTO> monthlyOrders = new ArrayList<>();
+    private Month month;
 
+    public Month getMonth() {
+        return month;
+    }
+
+    public void setMonth(Month month) {
+        this.month = month;
+    }
 
     public double getMonthlyDueAmount() {
         double dueAmount = 0;

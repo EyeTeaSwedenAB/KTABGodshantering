@@ -3,7 +3,7 @@ package com.peter.controller.maincontroller;
 import com.peter.dto.OrderDTO;
 import com.peter.integration.DataManager;
 import com.peter.dto.OrderSummaryDTO;
-import com.peter.model.business.data.Summarizer;
+import com.peter.model.business.util.Summarizer;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -113,6 +113,7 @@ public class MainController {
     }
 
     public Map<String, OrderSummaryDTO> getSummary(LocalDate start, LocalDate end) throws SQLException {
+
 
         return summarizer.summarize(dataManager.getOrders(start, end));
     }

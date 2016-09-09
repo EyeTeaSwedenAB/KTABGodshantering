@@ -1,8 +1,7 @@
-package com.peter.model.business.data;
+package com.peter.model.business.util;
 
 import com.peter.dto.OrderDTO;
 import com.peter.dto.OrderSummaryDTO;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +27,6 @@ public class Summarizer {
                 summaryMap.get(dto.getInvoiceReciever()).getMonthlyOrders().add(dto);
             }
         }
-
-//        for (OrderDTO orderDTO : orderDTOs) {
-//            if (!summaryMap.containsKey(orderDTO.getInvoiceReciever())) {
-//                List<OrderDTO> newList = new ArrayList<>();
-//                newList.add(orderDTO);
-//                summaryMap.put(orderDTO.getInvoiceReciever(), newList);
-//            } else {
-//                summaryMap.get(orderDTO.getInvoiceReciever()).add(orderDTO);
-//            }
-//        }
 
         return summaryMap;
     }
