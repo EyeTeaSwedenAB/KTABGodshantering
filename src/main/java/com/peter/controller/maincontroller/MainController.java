@@ -3,8 +3,11 @@ package com.peter.controller.maincontroller;
 import com.peter.dto.OrderDTO;
 import com.peter.integration.DataManager;
 import com.peter.dto.OrderSummaryDTO;
+import com.peter.model.business.excel.ExcelPrinter;
 import com.peter.model.business.util.Summarizer;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,11 +20,13 @@ public class MainController {
 
     private DataManager dataManager;
     private Summarizer summarizer;
+    private ExcelPrinter excelPrinter;
 
     public MainController() {
 
         dataManager = new DataManager();
         summarizer = new Summarizer();
+        excelPrinter = new ExcelPrinter();
     }
 
     public MainController(String url, String userName, String password) {
@@ -116,6 +121,10 @@ public class MainController {
 
 
         return summarizer.summarize(dataManager.getOrders(start, end));
+    }
+
+    public void printToExcel(Map<String, OrderSummaryDTO> summaryMap, File file) throws IOException {
+        excelPrinter.print(summaryMap,file);
     }
 
     // PRIVATE DOMAIN

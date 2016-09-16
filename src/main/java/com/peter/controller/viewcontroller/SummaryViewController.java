@@ -6,7 +6,10 @@ import com.peter.dto.OrderSummaryDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -149,6 +152,23 @@ public class SummaryViewController extends AbstractViewController {
         }
 
 
+    }
+
+    @FXML
+    private void handleExportButtonClicked() {
+        if (summaryMap != null) {
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showSaveDialog(null);
+
+            if (file != null)
+                try {
+                    getMainController().printToExcel(summaryMap, file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Util.showAlert("Ett fel uppstod", "Kunde inte läsa filen", Alert.AlertType.ERROR);
+                }
+        } else
+            Util.showAlert("Ett fel uppstod", "Du har inte hämtat någon data att exportera", Alert.AlertType.ERROR);
     }
 
 

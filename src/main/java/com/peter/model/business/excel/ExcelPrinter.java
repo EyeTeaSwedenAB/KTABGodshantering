@@ -26,8 +26,12 @@ public class ExcelPrinter {
 
     public void print(Map<String, OrderSummaryDTO> orderSummaryDTOMap, File file) throws IOException {
 
-        int currentRow = 1;
 
+        if (!file.getAbsolutePath().endsWith(".xlsx")){
+            file = new File(file.getAbsolutePath() + ".xlsx");
+        }
+
+        int currentRow = 1;
         currentRow = createSingleColumnFilledHeader("FAKURAUDERLAG", IndexedColors.YELLOW, (short) 24, currentRow, 0);
 
         for (String key : orderSummaryDTOMap.keySet()) {
