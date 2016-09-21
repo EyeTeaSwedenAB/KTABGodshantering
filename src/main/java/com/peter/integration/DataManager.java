@@ -3,10 +3,10 @@ package com.peter.integration;
 import com.peter.dto.OrderDTO;
 import com.peter.integration.database.Datafetcher;
 import com.peter.integration.integrationrequirements.Credentials;
-import com.peter.model.Account;
-import com.peter.model.GoodsCategory;
-import com.peter.model.InvoiceReciever;
-import com.peter.model.RawOrderData;
+import com.peter.model.data.Account;
+import com.peter.model.data.GoodsCategory;
+import com.peter.model.data.InvoiceReciever;
+import com.peter.model.data.RawOrderData;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package com.peter.model;
+package com.peter.model.data;
 
 /**
  * Created by andreajacobsson on 2016-08-23.

@@ -1,131 +1,106 @@
 package com.peter.startup;
 
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.kernel.color.Color;
+import com.itextpdf.kernel.color.DeviceCmyk;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfPage;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
+import com.itextpdf.layout.ColumnDocumentRenderer;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.layout.LayoutContext;
+import com.itextpdf.layout.layout.LayoutResult;
+import com.itextpdf.layout.renderer.AbstractRenderer;
+import com.itextpdf.layout.renderer.BlockRenderer;
+import com.itextpdf.layout.renderer.CellRenderer;
+import com.itextpdf.layout.renderer.IRenderer;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * Created by andreajacobsson on 2016-08-24.
  */
-public class Playground {
 
+public class Playground {
 
 
     public static final String SRC = "/Users/andreajacobsson/Dropbox/Javaprojekt/KTABGodshantering/src/main/resources/pdf/specTemplate.pdf";
     public static final String DEST = "/Users/andreajacobsson/Dropbox/Javaprojekt/KTABGodshantering/src/main/resources/pdf/spec.pdf";
+    public static final String IMAGE = "/Users/andreajacobsson/Dropbox/Javaprojekt/KTABGodshantering/src/main/resources/images/karingoLogo.png";
 
+    public static void main(String args[]) throws IOException {
 
-    public static void main(String[] args) throws DocumentException, IOException, SQLException {
-
-        File file = new File(DEST);
-        new Playground().manipulatePdf(SRC, DEST);
-
+        new Playground().createPDF();
     }
 
+    public void createPDF() throws IOException {
 
-    public void manipulatePdf(String src, String dest) throws IOException, DocumentException {
-        PdfReader reader = new PdfReader(src);
-        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
-        PdfContentByte cb = stamper.getOverContent(1);
-        ColumnText ct = new ColumnText(cb);
-        ct.setSimpleColumn(120f, 48f, 200f, 600f);
-        Font f = new Font();
-        Paragraph pz = new Paragraph(new Phrase(20, "Hello World!", f));
-        ct.addElement(pz);
-        ct.go();
-        BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA_BOLD, "Cp1252", BaseFont.EMBEDDED);
-        f = new Font(bf, 13);
-        ct = new ColumnText(cb);
-        ct.setSimpleColumn(120f, 48f, 200f, 700f);
-        pz = new Paragraph("Hello World!", f);
-        ct.addElement(pz);
-        ct.go();
-        stamper.close();
-        reader.close();
+        PdfWriter pdfWriter = new PdfWriter(DEST);
+        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+
+        PageSize ps = PageSize.A4.rotate();
+
+        PdfPage pdfPage = pdfDocument.addNewPage(ps);
+        PdfCanvas canvas = new PdfCanvas(pdfPage);
+
+        canvas.concatMatrix(1, 0, 0, 1, ps.getWidth() / 2, ps.getHeight() / 2);
+
+        //Draw X axis
+        canvas.moveTo(-(ps.getWidth() / 2 - 15), 0)
+                .lineTo(ps.getWidth() / 2 - 15, 0)
+                .stroke();
+        //Draw X axis arrow
+        canvas.setLineJoinStyle(PdfCanvasConstants.LineJoinStyle.ROUND)
+                .moveTo(ps.getWidth() / 2 - 25, -10)
+                .lineTo(ps.getWidth() / 2 - 15, 0)
+                .lineTo(ps.getWidth() / 2 - 25, 10).stroke()
+                .setLineJoinStyle(PdfCanvasConstants.LineJoinStyle.MITER);
+        //Draw Y axis
+        canvas.moveTo(0, -(ps.getHeight() / 2 - 15))
+                .lineTo(0, ps.getHeight() / 2 - 15)
+                .stroke();
+        //Draw Y axis arrow
+        canvas.saveState()
+                .setLineJoinStyle(PdfCanvasConstants.LineJoinStyle.ROUND)
+                .moveTo(-10, ps.getHeight() / 2 - 25)
+                .lineTo(0, ps.getHeight() / 2 - 15)
+                .lineTo(10, ps.getHeight() / 2 - 25).stroke()
+                .restoreState();
+        //Draw X serif
+        for (int i = -((int) ps.getWidth() / 2 - 61);
+             i < ((int) ps.getWidth() / 2 - 60); i += 40) {
+            canvas.moveTo(i, 5).lineTo(i, -5);
+        }
+        //Draw Y serif
+        for (int j = -((int) ps.getHeight() / 2 - 57);
+             j < ((int) ps.getHeight() / 2 - 56); j += 40) {
+            canvas.moveTo(5, j).lineTo(-5, j);
+        }
+
+        Color grayColor = new DeviceCmyk(0.f, 0.f, 0.f, 0.875f);
+        Color greenColor = new DeviceCmyk(1.f, 0.f, 1.f, 0.176f);
+        Color blueColor = new DeviceCmyk(1.f, 0.156f, 0.f, 0.118f);
+
+        canvas.setLineWidth(0.5f).setStrokeColor(blueColor);
+
+        for (int i = -((int) ps.getHeight() / 2 - 57);
+             i < ((int) ps.getHeight() / 2 - 56); i += 40) {
+            canvas.moveTo(-(ps.getWidth() / 2 - 15), i)
+                    .lineTo(ps.getWidth() / 2 - 15, i);
+        }
+        for (int j = -((int) ps.getWidth() / 2 - 61);
+             j < ((int) ps.getWidth() / 2 - 60); j += 40) {
+            canvas.moveTo(j, -(ps.getHeight() / 2 - 15))
+                    .lineTo(j, ps.getHeight() / 2 - 15);
+        }
+
+        canvas.stroke();
+        pdfDocument.close();
+
+
+
     }
-
-
-//        // step 1
-//        Document document = new Document(PageSize.POSTCARD, 30, 30, 30, 30);
-//        // step 2
-//        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Test.pdf", false));
-//        // step 3
-//        document.open();
-//        // step 4
-//
-//        // Create and add a Paragraph
-//        Paragraph p = new Paragraph("Foobar Film Festival", new Font(Font.FontFamily.HELVETICA, 22));
-//        p.setAlignment(Element.ALIGN_CENTER);
-//        document.add(p);
-//
-//        // Create and add an Image
-//        Image img = Image.getInstance(Playground.class.getResource("/images/dog.jpg"));
-//
-//        img.setAbsolutePosition((PageSize.POSTCARD.getWidth() - img.getScaledWidth()) / 2, (PageSize.POSTCARD.getHeight() - img.getScaledHeight()) / 2);
-//        document.add(img);
-//        // Now we go to the next page
-//        document.newPage();
-//        document.add(p);
-//        document.add(img);
-//        // Add text on top of the image
-//        PdfContentByte over = writer.getDirectContent();
-//        over.saveState();
-//        float sinus = (float) Math.sin(Math.PI / 60);
-//        float cosinus = (float) Math.cos(Math.PI / 60);
-//        BaseFont bf = BaseFont.createFont();
-//        over.beginText();
-//        over.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE);
-//        over.setLineWidth(1.5f);
-//        over.setRGBColorStroke(0xFF, 0x00, 0x00);
-//        over.setRGBColorFill(0xFF, 0xFF, 0xFF);
-//        over.setFontAndSize(bf, 36);
-//        over.setTextMatrix(cosinus, sinus, -sinus, cosinus, 50, 324);
-//        over.showText("SOLD OUT");
-//        over.endText();
-//        over.restoreState();
-//        // Add a rectangle under the image
-//        PdfContentByte under = writer.getDirectContentUnder();
-//        under.saveState();
-//        under.setRGBColorFill(0xFF, 0xD7, 0x00);
-//        under.rectangle(5, 5, PageSize.POSTCARD.getWidth() - 10, PageSize.POSTCARD.getHeight() - 10);
-//        under.fill();
-//        under.restoreState();
-//        // step 5
-//        document.close();
-
-
-//        DataManager dataManager = new DataManager("jdbc:mysql://ktabtest.cyzgfcxn1ubh.eu-central-1.rds.amazonaws.com:3306/KTABGoodsTest",
-//                "pebo0602", "PetBob82");
-//
-//
-//        List<OrderDTO> summarList = dataManager.getOrders(LocalDate.of(2016, 8, 1), LocalDate.of(2016, 8, 31));
-//        Map<String, OrderSummaryDTO> orderSummaryDTOMap = new Summarizer().summarize(summarList);
-//
-//
-//        for (Map.Entry<String, OrderSummaryDTO> entry : orderSummaryDTOMap.entrySet()) {
-//
-//            Document document = new Document();
-//            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(entry.getKey() + ".pdf", false));
-//            document.open();
-//
-//            document.add(new Chunk(entry.getKey()));
-//            document.add(Chunk.NEWLINE);
-//
-//            for (OrderDTO dto : orderSummaryDTOMap.get(entry.getKey()).getMonthlyOrders()) {
-//                document.add(new Paragraph(dto.getDate() + " " + dto.getGoodsCategory() + " " + dto.getDestination() + " " + dto.getNoOfUnits() + " " +
-//                        dto.getUnitPrice() + " "+  dto.getTotalPrice() + " " + dto.getComment()));
-//            }
-//
-//            document.close();
-//        }
-
-
 }
 

@@ -3,12 +3,18 @@ package com.peter.controller.viewcontroller;
 import com.peter.controller.Util;
 import com.peter.dto.OrderDTO;
 import com.peter.dto.OrderSummaryDTO;
+import com.peter.exceptions.NonValidDirectoryException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -21,6 +27,9 @@ import java.util.Map;
  * Created by andreajacobsson on 2016-09-04.
  */
 public class SummaryViewController extends AbstractViewController {
+
+    @FXML
+    private BorderPane rootBorderpane;
 
     @FXML
     private ComboBox<Month> monthCombobox;
@@ -64,15 +73,18 @@ public class SummaryViewController extends AbstractViewController {
     @FXML
     private Label totalLabel;
 
-    private Map<String, OrderSummaryDTO> summaryMap;
+    private Map<String, OrderSummaryDTO> currentSummaryMap;
+    private ContextMenu contextMenu;
 
     @Override
     public void init() {
 
         initTimeComboboxes();
         initTableView();
+        buildContextMenu();
         setUpListeners();
     }
+
 
     private void initTimeComboboxes() {
 
@@ -108,15 +120,16 @@ public class SummaryViewController extends AbstractViewController {
 
         invoiceRecieverListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             infoLabel.setText("");
-            OrderSummaryDTO orderSummaryDTO = summaryMap.get(newValue);
-            List<OrderDTO> monthlyOrders = orderSummaryDTO.getMonthlyOrders();
-            if (monthlyOrders != null) {
-                ordersTableView.getItems().clear();
-                ordersTableView.getItems().addAll(monthlyOrders);
-                infoLabel.setText("Ordrar för -" + newValue + "- under -" + monthCombobox.getValue() + "-");
 
-                totalLabel.setText("Totalt att fakturera: " + Double.toString(orderSummaryDTO.getMonthlyDueAmount()));
-            }
+            OrderSummaryDTO orderSummaryDTO = currentSummaryMap.get(newValue);
+            List<OrderDTO> monthlyOrders = orderSummaryDTO.getMonthlyOrders();
+
+            ordersTableView.getItems().clear();
+            ordersTableView.getItems().addAll(monthlyOrders);
+            infoLabel.setText("Ordrar för -" + newValue + "- under -" + monthCombobox.getValue() + "-");
+
+            totalLabel.setText("Totalt att fakturera: " + Double.toString(orderSummaryDTO.getMonthlyDueAmount()));
+
         });
 
 
@@ -137,14 +150,14 @@ public class SummaryViewController extends AbstractViewController {
         LocalDate end = LocalDate.of(year.getValue(), month, lastDayOfmonth);
 
         try {
-            summaryMap = getMainController().getSummary(start, end);
-            if (summaryMap.isEmpty())
+            currentSummaryMap = getMainController().getSummary(start, end);
+            if (currentSummaryMap.isEmpty())
                 Util.showAlert("Meddelade", "Inga transaktioner finns för den angivna månaden\n" + " " +
                         yearCombobox.getSelectionModel().getSelectedItem() + " " +
                         monthCombobox.getSelectionModel().getSelectedItem(), Alert.AlertType.INFORMATION);
 
             else
-                invoiceRecieverListView.getItems().addAll(summaryMap.keySet());
+                invoiceRecieverListView.getItems().addAll(currentSummaryMap.keySet());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -156,13 +169,13 @@ public class SummaryViewController extends AbstractViewController {
 
     @FXML
     private void handleExportButtonClicked() {
-        if (summaryMap != null) {
+        if (currentSummaryMap != null) {
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showSaveDialog(null);
 
             if (file != null)
                 try {
-                    getMainController().printToExcel(summaryMap, file);
+                    getMainController().printToExcel(currentSummaryMap, file);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Util.showAlert("Ett fel uppstod", "Kunde inte läsa filen", Alert.AlertType.ERROR);
@@ -172,4 +185,90 @@ public class SummaryViewController extends AbstractViewController {
     }
 
 
+    @FXML
+    private void handleGeneratePDFButtonClicked() {
+
+        if (currentSummaryMap != null) {
+
+            try {
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                File directory = directoryChooser.showDialog(null);
+                if (directory != null)
+                    getMainController().generatePDFs(directory, currentSummaryMap);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Util.showAlert("Ett fel uppstod", "Kunde inte hitta mappen", Alert.AlertType.ERROR);
+
+            } catch (NonValidDirectoryException e) {
+                e.printStackTrace();
+
+            }
+
+        } else {
+            Util.showAlert("Ett fel uppstod", "Du har inte hämtat någon data att exportera", Alert.AlertType.ERROR);
+        }
+    }
+
+
+    @FXML
+    private void handleListViewClicked(MouseEvent mouseEvent) {
+        if (notEmptyListView()) {
+
+            if (isSecondaryButton(mouseEvent)) {
+
+                contextMenu.show(rootBorderpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+            } else
+                contextMenu.hide();
+
+        } else
+            Util.showAlert("Medelande", "Du måste hämta data innan du kan exportera till PDF.", Alert.AlertType.INFORMATION);
+    }
+
+    private void buildContextMenu() {
+        contextMenu = new ContextMenu();
+        contextMenu.getItems().add(createSinglePDFMenuItem());
+
+    }
+
+
+    private MenuItem createSinglePDFMenuItem() {
+        MenuItem singlePDFMenuItem = new MenuItem("Skapa PDF");
+
+
+        singlePDFMenuItem.setOnAction(actionEvent -> {
+
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            File directory = directoryChooser.showDialog(null);
+            if (directory != null) {
+
+                String invoiceReciever = invoiceRecieverListView.getSelectionModel().getSelectedItem();
+
+                if (invoiceReciever != null) {
+
+                    try {
+                        getMainController().generatePDF(directory, currentSummaryMap.get(invoiceReciever));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Util.showAlert("Ett fel uppstod", "Kunde inte hitta mappen", Alert.AlertType.ERROR);
+                    } catch (NonValidDirectoryException e) {
+                        e.printStackTrace();
+                        Util.showAlert("Ett fel uppstod", "Du har inte valt en giltig mapp att spara dina filer i", Alert.AlertType.ERROR);
+                    }
+
+                }
+
+            }
+        });
+
+        return singlePDFMenuItem;
+    }
+
+    private boolean isSecondaryButton(MouseEvent mouseEvent) {
+        return mouseEvent.getButton() == MouseButton.SECONDARY;
+    }
+
+    private boolean notEmptyListView() {
+        return invoiceRecieverListView.getItems().size() > 0;
+    }
 }

@@ -48,7 +48,6 @@ public class ExcelPrinter {
         workbook.write(fout);
         workbook.close();
 
-
     }
 
     // PRIVATE DOMAIN

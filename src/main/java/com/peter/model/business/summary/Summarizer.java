@@ -1,4 +1,4 @@
-package com.peter.model.business.util;
+package com.peter.model.business.summary;
 
 import com.peter.dto.OrderDTO;
 import com.peter.dto.OrderSummaryDTO;
@@ -13,8 +13,8 @@ public class Summarizer {
 
 
     public Map<String, OrderSummaryDTO> summarize(List<OrderDTO> orderDTOs) {
-        Map<String, OrderSummaryDTO> summaryMap = new HashMap<>();
 
+        Map<String, OrderSummaryDTO> summaryMap = new HashMap<>();
 
         for (OrderDTO dto : orderDTOs) {
             if (!summaryMap.containsKey(dto.getInvoiceReciever())){

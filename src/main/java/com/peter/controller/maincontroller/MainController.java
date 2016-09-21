@@ -1,12 +1,15 @@
 package com.peter.controller.maincontroller;
 
 import com.peter.dto.OrderDTO;
-import com.peter.integration.DataManager;
 import com.peter.dto.OrderSummaryDTO;
+import com.peter.exceptions.NonValidDirectoryException;
+import com.peter.integration.DataManager;
 import com.peter.model.business.excel.ExcelPrinter;
-import com.peter.model.business.util.Summarizer;
+import com.peter.model.business.pdf.PDFManager;
+import com.peter.model.business.summary.Summarizer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -21,12 +24,14 @@ public class MainController {
     private DataManager dataManager;
     private Summarizer summarizer;
     private ExcelPrinter excelPrinter;
+    private PDFManager pdfManager;
 
     public MainController() {
 
         dataManager = new DataManager();
         summarizer = new Summarizer();
         excelPrinter = new ExcelPrinter();
+        pdfManager = new PDFManager();
     }
 
     public MainController(String url, String userName, String password) {
@@ -119,13 +124,22 @@ public class MainController {
 
     public Map<String, OrderSummaryDTO> getSummary(LocalDate start, LocalDate end) throws SQLException {
 
-
         return summarizer.summarize(dataManager.getOrders(start, end));
     }
 
     public void printToExcel(Map<String, OrderSummaryDTO> summaryMap, File file) throws IOException {
-        excelPrinter.print(summaryMap,file);
+        excelPrinter.print(summaryMap, file);
     }
+
+    public void generatePDFs(File directory, Map<String, OrderSummaryDTO> currentSummaryMap) throws FileNotFoundException, NonValidDirectoryException {
+        pdfManager.createPDFs(directory, currentSummaryMap);
+    }
+
+    public void generatePDF(File directory, OrderSummaryDTO summaryDTO) throws FileNotFoundException, NonValidDirectoryException {
+        pdfManager.createSinglePDF(directory, summaryDTO);
+
+    }
+
 
     // PRIVATE DOMAIN
     ///////////////////////////////////////////////////////////////////////////////
