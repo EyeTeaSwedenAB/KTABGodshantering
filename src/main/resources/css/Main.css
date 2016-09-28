@@ -1,0 +1,15 @@
+.rounded-label {
+    -fx-border-color: black;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-background-color: white;
+    -fx-padding: 10px;
+
+}
+
+.rounded-label .text {
+}
+
+.modal-pane {
+    -fx-background-color: dimgray;
+}

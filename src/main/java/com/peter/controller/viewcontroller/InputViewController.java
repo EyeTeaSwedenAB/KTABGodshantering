@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class Input extends AbstractViewController implements Observer {
+public class InputViewController extends AbstractViewController implements Observer {
 
     @FXML
     private DatePicker datePicker;
@@ -179,6 +179,8 @@ public class Input extends AbstractViewController implements Observer {
     }
 
 
+
+
     private boolean isValidInputFields() {
 
         if (invoiceRecieverCombobox.getValue() == null || accountsCombobox.getValue() == null || goodsCategoryComboBox.getValue() == null)
@@ -331,7 +333,7 @@ public class Input extends AbstractViewController implements Observer {
                     String comment = commentsTextField.getText();
 
 
-                    newOrderDTO = new OrderDTO(0, date, invoiceReciever, accountDTO, goodsCatDTO, noOfUnits, unitPrice, totalPrice, comment, 0);
+                    newOrderDTO = new OrderDTO(0, date, invoiceReciever, accountDTO, goodsCatDTO, noOfUnits, unitPrice, totalPrice, comment, "Ej mailad");
 
                     try {
                         getMainController().sendNewEntry(newOrderDTO);

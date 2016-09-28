@@ -62,7 +62,7 @@ public class ExcelPrinter {
         row.createCell(startCol++).setCellValue(orderDTO.getNoOfUnits());
         row.createCell(startCol++).setCellValue(orderDTO.getUnitPrice());
         row.createCell(startCol++).setCellValue(orderDTO.getTotalPrice());
-        row.createCell(startCol++).setCellValue(orderDTO.getInvoiceSent());
+        row.createCell(startCol++).setCellValue(orderDTO.getMailedDate());
         return startRow + 1;
 
     }

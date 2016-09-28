@@ -18,6 +18,7 @@ import com.peter.Util.SweMonthConverter;
 import com.peter.dto.OrderDTO;
 import com.peter.dto.OrderSummaryDTO;
 import com.peter.exceptions.NonValidDirectoryException;
+import com.peter.model.Constants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -163,7 +164,7 @@ public class PDFManager {
         String sweMonth = SweMonthConverter.convert(endingDate.getMonth()).getName();
         String year = Integer.toString(endingDate.getYear());
 
-        String fileName = "Underlag " + summaryDTO.getInvoiceReciver() + " " + sweMonth + " " + year;
+        String fileName = Constants.PDF_FILENAME_START + " " + summaryDTO.getInvoiceReciver() + " " + sweMonth + " " + year;
 
         return directory.getAbsolutePath() + "/" + fileName + ".pdf";
     }

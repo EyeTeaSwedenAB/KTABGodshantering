@@ -1,9 +1,11 @@
 package com.peter.startup;
 
 import com.peter.controller.maincontroller.MainController;
-import com.peter.controller.viewcontroller.ContainerView;
-import com.peter.controller.viewcontroller.Input;
+import com.peter.controller.viewcontroller.ContainerViewController;
+import com.peter.controller.viewcontroller.InputViewController;
 import com.peter.controller.viewcontroller.SummaryViewController;
+import com.peter.model.business.mail.MailStateEvent;
+import com.peter.view.ModalPane;
 import com.sun.javafx.application.LauncherImpl;
 import javafx.application.Application;
 import javafx.application.Preloader;
@@ -13,15 +15,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.Observable;
+import java.util.Observer;
 
-public class MainApp extends Application {
+public class MainApp extends Application implements Observer {
 
-    private ContainerView containerViewController;
-    private Input inputViewController;
+    private Stage mainStage;
+    private ContainerViewController containerViewController;
+    private InputViewController inputViewController;
     private BorderPane inputView;
     private BorderPane containerView;
     private BorderPane summaryView;
     private SummaryViewController summaryViewController;
+    private MainController mainController;
 
 
     public static void main(String[] args) throws Exception {
@@ -32,6 +38,8 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        mainStage = stage;
 
         containerView = new BorderPane();
         FXMLLoader containerLoader = new FXMLLoader(getClass().getResource("/fxml/application/ContainerView.fxml"));
@@ -74,18 +82,19 @@ public class MainApp extends Application {
 
         notifyPreloader(new Preloader.ProgressNotification(0));
 
-        MainController mainController = new MainController();
+        mainController = new MainController();
+        mainController.addMailManagerObserver(this);
         mainController.setLoginInformation("jdbc:mysql://ktabtest.cyzgfcxn1ubh.eu-central-1.rds.amazonaws.com:3306/KTABGoodsTest", "pebo0602", "PetBob82");
 
         notifyPreloader(new Preloader.ProgressNotification(0.4));
         Thread.sleep(400);
 
-        containerViewController = new ContainerView();
+        containerViewController = new ContainerViewController();
         containerViewController.setMainController(mainController);
         containerViewController.setMainApp(this);
         notifyPreloader(new Preloader.ProgressNotification(0.5));
 
-        inputViewController = new Input();
+        inputViewController = new InputViewController();
         inputViewController.setMainController(mainController);
         inputViewController.setMainApp(this);
         inputViewController.loadInitialData();
@@ -113,5 +122,17 @@ public class MainApp extends Application {
         else if (view.equalsIgnoreCase("summaryView"))
 //                if (containerView.getBottom() != summaryView)
             containerView.setBottom(summaryView);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
+        if (arg instanceof MailStateEvent) {
+            MailStateEvent event = (MailStateEvent) arg;
+            if (event.isRunning())
+                containerView.setBottom(new ModalPane());
+            else
+                containerView.setBottom(summaryView);
+        }
     }
 }

@@ -3,10 +3,12 @@ package com.peter.controller.maincontroller;
 import com.peter.dto.OrderDTO;
 import com.peter.dto.OrderSummaryDTO;
 import com.peter.exceptions.NonValidDirectoryException;
-import com.peter.integration.DataManager;
+import com.peter.exceptions.WrongFilenameFormatException;
 import com.peter.model.business.excel.ExcelPrinter;
+import com.peter.model.business.mail.MailManager;
 import com.peter.model.business.pdf.PDFManager;
 import com.peter.model.business.summary.Summarizer;
+import com.peter.model.data.DataManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +17,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 /**
  * Created by andreajacobsson on 2016-08-22.
@@ -25,6 +28,7 @@ public class MainController {
     private Summarizer summarizer;
     private ExcelPrinter excelPrinter;
     private PDFManager pdfManager;
+    private MailManager mailManager;
 
     public MainController() {
 
@@ -32,6 +36,7 @@ public class MainController {
         summarizer = new Summarizer();
         excelPrinter = new ExcelPrinter();
         pdfManager = new PDFManager();
+        mailManager = new MailManager();
     }
 
     public MainController(String url, String userName, String password) {
@@ -69,7 +74,6 @@ public class MainController {
 
     }
 
-
     public int sendNewEntry(OrderDTO orderEntryDTO) throws SQLException {
         return dataManager.sendNewEntry(orderEntryDTO);
     }
@@ -91,8 +95,8 @@ public class MainController {
         return dataManager.deleteLastEntry();
     }
 
-    public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone) throws SQLException {
-        return dataManager.addNewInvoiceReciever(company, address, contact, phone);
+    public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone, String email) throws SQLException {
+        return dataManager.addNewInvoiceReciever(company, address, contact, phone, email);
     }
 
     public List<String> addGoodsCategory(String goodsCategory, double unitPrice) throws SQLException {
@@ -137,7 +141,15 @@ public class MainController {
 
     public void generatePDF(File directory, OrderSummaryDTO summaryDTO) throws FileNotFoundException, NonValidDirectoryException {
         pdfManager.createSinglePDF(directory, summaryDTO);
+    }
 
+    public void mailPDFs(File[] pdfFiles) throws WrongFilenameFormatException {
+
+        mailManager.sendMultipleMails(pdfFiles, dataManager.getNameToInvoiceRecieverMap());
+    }
+
+    public void addMailManagerObserver(Observer observer) {
+        mailManager.addObserver(observer);
     }
 
 

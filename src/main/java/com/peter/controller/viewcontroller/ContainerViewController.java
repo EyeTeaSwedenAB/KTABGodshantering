@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public class ContainerView extends AbstractViewController implements Observer, ObservableViewController {
+public class ContainerViewController extends AbstractViewController implements Observer, ObservableViewController {
 
     private List<Observer> observers = new ArrayList<>();
 

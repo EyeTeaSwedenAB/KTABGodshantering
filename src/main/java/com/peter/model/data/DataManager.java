@@ -1,12 +1,8 @@
-package com.peter.integration;
+package com.peter.model.data;
 
 import com.peter.dto.OrderDTO;
-import com.peter.integration.database.Datafetcher;
+import com.peter.integration.database.DatafetcherDAO;
 import com.peter.integration.integrationrequirements.Credentials;
-import com.peter.model.data.Account;
-import com.peter.model.data.GoodsCategory;
-import com.peter.model.data.InvoiceReciever;
-import com.peter.model.data.RawOrderData;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -20,7 +16,7 @@ import java.util.Map;
  */
 public class DataManager {
 
-    private Datafetcher datafetcher;
+    private DatafetcherDAO datafetcherDAO;
 
     private Map<String, Account> nameToAccountMap = new HashMap<>();
     private Map<String, GoodsCategory> nameToGoodsCategoryMap = new HashMap<>();
@@ -35,21 +31,21 @@ public class DataManager {
     private OrderDTO orderDTO;
 
     public DataManager() {
-        datafetcher = Datafetcher.getNewInstance();
+        datafetcherDAO = DatafetcherDAO.getNewInstance();
     }
 
     public DataManager(String databaseUrl, String userName, String password) {
-        datafetcher = Datafetcher.getNewInstance(databaseUrl, new Credentials(userName, password));
+        datafetcherDAO = DatafetcherDAO.getNewInstance(databaseUrl, new Credentials(userName, password));
     }
 
     public void setLoginInformation(String url, String userName, String password) {
-        datafetcher.setUrl(url);
-        datafetcher.setCredentials(new Credentials(userName, password));
+        datafetcherDAO.setUrl(url);
+        datafetcherDAO.setCredentials(new Credentials(userName, password));
     }
 
 
     public void testConnection() throws SQLException {
-        datafetcher.testConnection();
+        datafetcherDAO.testConnection();
     }
 
 
@@ -58,7 +54,7 @@ public class DataManager {
         nameToAccountMap.clear();
         accountToIdMap.clear();
 
-        List<Account> accounts = datafetcher.getAllAccounts();
+        List<Account> accounts = datafetcherDAO.getAllAccounts();
         List<String> accountsAsString = new ArrayList<>();
 
         for (Account account : accounts) {
@@ -73,37 +69,41 @@ public class DataManager {
 
     public List<String> getAllGoodsCategories() throws SQLException {
 
-        List<GoodsCategory> goodsCategories = datafetcher.getAllGoodsCategories();
+        List<GoodsCategory> goodsCategories = datafetcherDAO.getAllGoodsCategories();
         return updateGoodsCategorysMaps(goodsCategories);
     }
 
 
     public List<String> getAllInvoiceRecievers() throws SQLException {
 
-        List<InvoiceReciever> invoiceRecievers = datafetcher.getAllInvoiceRecievers();
+        List<InvoiceReciever> invoiceRecievers = datafetcherDAO.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(invoiceRecievers);
     }
 
     public List<OrderDTO> getOrders(int limit) throws SQLException {
 
-        return datafetcher.fetchOrders(limit);
+        return datafetcherDAO.fetchOrders(limit);
     }
 
     public List<OrderDTO> getOrders(LocalDate localDate) throws SQLException {
 
-        return datafetcher.fetchOrders(localDate.toString());
+        return datafetcherDAO.fetchOrders(localDate.toString());
     }
 
     public List<OrderDTO> getOrders(LocalDate start, LocalDate end) throws SQLException {
 
-        return datafetcher.fetchOrders(start.toString(), end.toString());
+        return datafetcherDAO.fetchOrders(start.toString(), end.toString());
+    }
+
+    public Map<String, InvoiceReciever> getNameToInvoiceRecieverMap(){
+        return this.nameToInvoiceRecieverMap;
     }
 
 
     public int sendNewEntry(OrderDTO orderDTO) throws SQLException {
 
         RawOrderData rawOrderData = convertToRawOrderData(orderDTO);
-        return datafetcher.sendNewEntry(rawOrderData);
+        return datafetcherDAO.sendNewEntry(rawOrderData);
     }
 
     public double getUnitPrice(String goodsCategory) {
@@ -116,21 +116,21 @@ public class DataManager {
 
 
     public int deleteLastEntry() throws SQLException {
-        return datafetcher.deleteLastEntry();
+        return datafetcherDAO.deleteLastEntry();
     }
 
-    public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone) throws SQLException {
-        InvoiceReciever invoiceReciever = new InvoiceReciever(0, company, address, contact, phone);
-        datafetcher.addInvoiceReciever(invoiceReciever);
-        List<InvoiceReciever> newInvoiceRecivers = datafetcher.getAllInvoiceRecievers();
+    public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone, String email) throws SQLException {
+        InvoiceReciever invoiceReciever = new InvoiceReciever(0, company, address, contact, phone, email);
+        datafetcherDAO.addInvoiceReciever(invoiceReciever);
+        List<InvoiceReciever> newInvoiceRecivers = datafetcherDAO.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(newInvoiceRecivers);
     }
 
 
     public List<String> addAccount(String accountName) throws SQLException {
         Account account = new Account(0, accountName);
-        datafetcher.addAccount(account);
-        List<Account> newAccounts = datafetcher.getAllAccounts();
+        datafetcherDAO.addAccount(account);
+        List<Account> newAccounts = datafetcherDAO.getAllAccounts();
         return updateAccountMaps(newAccounts);
 
     }
@@ -139,16 +139,16 @@ public class DataManager {
     public List<String> addGoodsGategory(String goodsCategory, double unitPrice) throws SQLException {
 
         GoodsCategory category = new GoodsCategory(0, goodsCategory, unitPrice);
-        datafetcher.addGoodsCategory(category);
-        List<GoodsCategory> newGoodsCategories = datafetcher.getAllGoodsCategories();
+        datafetcherDAO.addGoodsCategory(category);
+        List<GoodsCategory> newGoodsCategories = datafetcherDAO.getAllGoodsCategories();
         return updateGoodsCategorysMaps(newGoodsCategories);
     }
 
     public List<String> deleteInvoiceReciever(String selectedInvoiceReciever) throws SQLException {
 
         InvoiceReciever invoiceReciever = nameToInvoiceRecieverMap.get(selectedInvoiceReciever);
-        datafetcher.deteleInvoiceReciever(invoiceReciever);
-        List<InvoiceReciever> newInvoiceRecievers = datafetcher.getAllInvoiceRecievers();
+        datafetcherDAO.deteleInvoiceReciever(invoiceReciever);
+        List<InvoiceReciever> newInvoiceRecievers = datafetcherDAO.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(newInvoiceRecievers);
     }
 
@@ -157,8 +157,8 @@ public class DataManager {
 
         GoodsCategory goodsCategory = nameToGoodsCategoryMap.get(selectedGoodsCategory);
 
-        datafetcher.deleteGoodsCategory(goodsCategory);
-        List<GoodsCategory> newGoodsCategories = datafetcher.getAllGoodsCategories();
+        datafetcherDAO.deleteGoodsCategory(goodsCategory);
+        List<GoodsCategory> newGoodsCategories = datafetcherDAO.getAllGoodsCategories();
         return updateGoodsCategorysMaps(newGoodsCategories);
 
     }
@@ -166,9 +166,18 @@ public class DataManager {
     public List<String> deleteAccount(String selectedAccount) throws SQLException {
 
         Account account = nameToAccountMap.get(selectedAccount);
-        datafetcher.deleteAccount(account);
-        List<Account> newAccounts = datafetcher.getAllAccounts();
+        datafetcherDAO.deleteAccount(account);
+        List<Account> newAccounts = datafetcherDAO.getAllAccounts();
         return updateAccountMaps(newAccounts);
+    }
+
+    public int deleteEntry(OrderDTO selectedRow) throws SQLException {
+        return datafetcherDAO.deleteEntry(selectedRow);
+    }
+
+
+    public String resolveEmail(String invoicereciver){
+        return nameToInvoiceRecieverMap.get(invoicereciver).getEmail();
     }
 
     /// / Private Domain
@@ -230,13 +239,11 @@ public class DataManager {
         int noOfUnits = orderDTO.getNoOfUnits();
         double totalPrice = orderDTO.getTotalPrice();
         String comment = orderDTO.getComment();
-        int invoiceSent = orderDTO.getInvoiceSent();
+        String invoiceSent = orderDTO.getMailedDate();
 
         return new RawOrderData(0, date, invoiceID, accountID, goodsCatID, noOfUnits, totalPrice, comment, invoiceSent);
 
     }
 
-    public int deleteEntry(OrderDTO selectedRow) throws SQLException {
-        return datafetcher.deleteEntry(selectedRow);
-    }
+
 }

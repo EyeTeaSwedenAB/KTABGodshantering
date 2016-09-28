@@ -14,11 +14,11 @@ public class RawOrderData {
     private int noOfUnits;
     private double totalPrice;
     private String comment;
-    private int invoiceSent;
+    private String mailedDate;
 
 
     public RawOrderData(int id, String date, int invoiceRecieverId, int accountId,
-                        int goodsCategoryId, int noOfUnits, double totalPrice, String comment, int invoiceSent) {
+                        int goodsCategoryId, int noOfUnits, double totalPrice, String comment, String mailedDate) {
         this.id = id;
         this.date = date;
         this.invoiceRecieverId = invoiceRecieverId;
@@ -27,7 +27,7 @@ public class RawOrderData {
         this.noOfUnits = noOfUnits;
         this.totalPrice = totalPrice;
         this.comment = comment;
-        this.invoiceSent = invoiceSent;
+        this.mailedDate = mailedDate;
     }
 
     public int getId() {
@@ -73,7 +73,7 @@ public class RawOrderData {
     }
 
 
-    public int getInvoiceSent() {
-        return invoiceSent;
+    public String getMailedDate() {
+        return mailedDate;
     }
 }

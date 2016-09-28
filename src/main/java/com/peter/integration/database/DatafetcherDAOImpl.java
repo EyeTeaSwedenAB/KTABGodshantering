@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-23.
  */
-class DatafetcherImpl extends Datafetcher {
+class DatafetcherDAOImpl extends DatafetcherDAO {
 
     private Connection globalConnection;
     private Statement globalStmt;
@@ -24,10 +24,10 @@ class DatafetcherImpl extends Datafetcher {
     private Credentials credentials;
     private String url;
 
-    DatafetcherImpl() {
+    DatafetcherDAOImpl() {
     }
 
-    DatafetcherImpl(String url, Credentials credentials) {
+    DatafetcherDAOImpl(String url, Credentials credentials) {
         this.url = url;
         this.credentials = credentials;
     }
@@ -79,7 +79,8 @@ class DatafetcherImpl extends Datafetcher {
                     globalResutset.getString("company"),
                     globalResutset.getString("adress"),
                     globalResutset.getString("contact"),
-                    globalResutset.getString("phone")));
+                    globalResutset.getString("phone"),
+                    globalResutset.getString("email")));
 
         closeGlobalResources();
         return invoiceRecievers;
@@ -107,7 +108,7 @@ class DatafetcherImpl extends Datafetcher {
     public List<OrderDTO> fetchOrders(int limit) throws SQLException {
 
 
-        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.invoice_sent " +
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.mailed_date " +
                 "FROM orders " +
                 "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
                 "JOIN accounts ON orders.accounts_id = accounts.id " +
@@ -123,7 +124,7 @@ class DatafetcherImpl extends Datafetcher {
     @Override
     public List<OrderDTO> fetchOrders(String date) throws SQLException {
 
-        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.invoice_sent " +
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.mailed_date " +
                 "FROM orders " +
                 "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
                 "JOIN accounts ON orders.accounts_id = accounts.id " +
@@ -138,7 +139,7 @@ class DatafetcherImpl extends Datafetcher {
 
     @Override
     public List<OrderDTO> fetchOrders(String startDate, String endDate) throws SQLException {
-        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.invoice_sent " +
+        String sql = "SELECT orders.id, orders.date, invoicerecievers.company, accounts.account, goodscategories.category, orders.nounits, goodscategories.unitprice ,orders.totalprice, orders.comment, orders.mailed_date " +
                 "FROM orders " +
                 "JOIN invoicerecievers ON orders.invoicereciever_id = invoicerecievers.id " +
                 "JOIN accounts ON orders.accounts_id = accounts.id " +
@@ -270,7 +271,6 @@ class DatafetcherImpl extends Datafetcher {
 
     @Override
     public int deleteEntry(OrderDTO selectedRow) throws SQLException {
-        System.out.println("Order id = " + selectedRow.getId());
         String sql = "DELETE FROM " + Table.ORDERS + " WHERE id = ?";
         openGlobalRecources();
         globalPrepStmt = globalConnection.prepareStatement(sql);
@@ -323,18 +323,6 @@ class DatafetcherImpl extends Datafetcher {
         return globalConnection;
     }
 
-    private void closeGlobalResources(Connection connection, PreparedStatement preparedStatement, Statement statement, ResultSet resultSet) throws SQLException {
-
-        if (resultSet != null)
-            resultSet.close();
-        if (statement != null)
-            statement.close();
-        if (preparedStatement != null)
-            preparedStatement.close();
-        if (connection != null)
-            connection.close();
-    }
-
     private void closeGlobalResources() throws SQLException {
 
         if (globalResutset != null)
@@ -361,7 +349,7 @@ class DatafetcherImpl extends Datafetcher {
                 globalResutset.getDouble("unitprice"),
                 globalResutset.getDouble("totalprice"),
                 globalResutset.getString("comment"),
-                globalResutset.getInt("invoice_sent"));
+                globalResutset.getString("mailed_date"));
 
     }
 }

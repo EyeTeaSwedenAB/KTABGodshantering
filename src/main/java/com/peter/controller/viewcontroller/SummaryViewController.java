@@ -4,6 +4,7 @@ import com.peter.controller.Util;
 import com.peter.dto.OrderDTO;
 import com.peter.dto.OrderSummaryDTO;
 import com.peter.exceptions.NonValidDirectoryException;
+import com.peter.exceptions.WrongFilenameFormatException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -128,7 +129,7 @@ public class SummaryViewController extends AbstractViewController {
             ordersTableView.getItems().addAll(monthlyOrders);
             infoLabel.setText("Ordrar för -" + newValue + "- under -" + monthCombobox.getValue() + "-");
 
-            totalLabel.setText("Totalt att fakturera: " + Double.toString(orderSummaryDTO.getMonthlyDueAmount()));
+            totalLabel.setText("Totalt att fakturera: " + Double.toString(orderSummaryDTO.getMonthlyDueAmount()) + " kr.");
 
         });
 
@@ -169,7 +170,8 @@ public class SummaryViewController extends AbstractViewController {
 
     @FXML
     private void handleExportButtonClicked() {
-        if (currentSummaryMap != null) {
+
+        if (dataIsCollected()) {
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showSaveDialog(null);
 
@@ -186,15 +188,17 @@ public class SummaryViewController extends AbstractViewController {
 
 
     @FXML
-    private void handleGeneratePDFButtonClicked() {
+    private File handleGeneratePDFButtonClicked() {
 
-        if (currentSummaryMap != null) {
+        if (dataIsCollected()) {
 
             try {
                 DirectoryChooser directoryChooser = new DirectoryChooser();
                 File directory = directoryChooser.showDialog(null);
                 if (directory != null)
                     getMainController().generatePDFs(directory, currentSummaryMap);
+
+                return directory;
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -207,6 +211,35 @@ public class SummaryViewController extends AbstractViewController {
 
         } else {
             Util.showAlert("Ett fel uppstod", "Du har inte hämtat någon data att exportera", Alert.AlertType.ERROR);
+        }
+
+        return null;
+    }
+
+    private boolean dataIsCollected() {
+        return currentSummaryMap != null;
+    }
+
+
+    @FXML
+    private void handleGeneratePDFsAndMailAllButtonClicked() {
+
+        File chosenDirectory = handleGeneratePDFButtonClicked();
+
+        if (chosenDirectory != null){
+
+            try {
+                getMainController().mailPDFs(chosenDirectory.listFiles());
+            } catch (WrongFilenameFormatException e) {
+
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+                System.out.println(e.getWrongFile().toString());
+            }
+        }
+        else{
+
+            // What to do if cancel button clicked
         }
     }
 

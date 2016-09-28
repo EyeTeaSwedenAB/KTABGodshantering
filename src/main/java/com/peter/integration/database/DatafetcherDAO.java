@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by andreajacobsson on 2016-08-22.
  */
-public abstract class Datafetcher {
+public abstract class DatafetcherDAO {
 
     public abstract void setUrl(String url);
 
@@ -49,12 +49,12 @@ public abstract class Datafetcher {
 
     public abstract int deleteGoodsCategory(GoodsCategory goodsCategory) throws SQLException;
 
-    public static Datafetcher getNewInstance() {
-        return new DatafetcherImpl();
+    public static DatafetcherDAO getNewInstance() {
+        return new DatafetcherDAOImpl();
     }
 
-    public static Datafetcher getNewInstance(String url, Credentials credentials) {
-        return new DatafetcherImpl(url, credentials);
+    public static DatafetcherDAO getNewInstance(String url, Credentials credentials) {
+        return new DatafetcherDAOImpl(url, credentials);
     }
 
     public abstract int deleteAccount(Account account) throws SQLException;

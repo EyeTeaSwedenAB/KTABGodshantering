@@ -14,12 +14,12 @@ public class OrderDTO {
     private final double unitPrice;
     private final double totalPrice;
     private final String comment;
-    private final int invoiceSent;
+    private final String mailedDate;
 
 
     public OrderDTO(int id, String date, String invoiceReciever, String destination,
                     String goodsCategory, int noOfUnits, double unitPrice, double totalPrice,
-                    String comment, int invoiceSent) {
+                    String comment, String mailedDate) {
 
         this.id = id;
         this.date = date;
@@ -30,7 +30,7 @@ public class OrderDTO {
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
         this.comment = comment;
-        this.invoiceSent = invoiceSent;
+        this.mailedDate = mailedDate;
     }
 
     public int getId() {
@@ -69,7 +69,7 @@ public class OrderDTO {
         return comment;
     }
 
-    public int getInvoiceSent() {
-        return invoiceSent;
+    public String getMailedDate() {
+        return mailedDate;
     }
 }

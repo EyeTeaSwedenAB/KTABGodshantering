@@ -28,6 +28,9 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
     @FXML
     private TextField phoneTextField;
 
+    @FXML
+    private TextField emailTextfield;
+
 
 
     @Override
@@ -43,10 +46,11 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
         String address = adressTextField.getText();
         String contact = contactTextField.getText();
         String phone = phoneTextField.getText();
+        String email = emailTextfield.getText();
 
-        if (isValidInput(company, address, contact, phone)) {
+        if (isValidInput(company, address, contact, phone, email)) {
             try {
-                List<String> newInvoiceRecevers = this.getMainController().addNewInvoiceReciever(company, address, contact, phone);
+                List<String> newInvoiceRecevers = this.getMainController().addNewInvoiceReciever(company, address, contact, phone, email);
 
                 for (Observer observer : this.getObservers()) {
                     UpdateEvent<List<String>> updateEvent = new InvoiceRecieverUpdateEvent(newInvoiceRecevers);
@@ -71,7 +75,7 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
     }
 
 
-    private boolean isValidInput(String company, String address, String contact, String phone){
+    private boolean isValidInput(String company, String address, String contact, String phone, String email){
 //        return company.length() != 0 && address.length() != 0 && contact.length() != 0 && phone.length() != 0;
         return company.length() != 0;
     }
