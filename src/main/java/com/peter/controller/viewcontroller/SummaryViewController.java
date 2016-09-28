@@ -216,11 +216,6 @@ public class SummaryViewController extends AbstractViewController {
         return null;
     }
 
-    private boolean dataIsCollected() {
-        return currentSummaryMap != null;
-    }
-
-
     @FXML
     private void handleGeneratePDFsAndMailAllButtonClicked() {
 
@@ -255,15 +250,16 @@ public class SummaryViewController extends AbstractViewController {
                 contextMenu.hide();
 
         } else
-            Util.showAlert("Medelande", "Du måste hämta data innan du kan exportera till PDF.", Alert.AlertType.INFORMATION);
+            Util.showAlert("Meddelande", "Du måste hämta data innan du kan exportera till PDF.", Alert.AlertType.INFORMATION);
     }
+
+
 
     private void buildContextMenu() {
         contextMenu = new ContextMenu();
         contextMenu.getItems().add(createSinglePDFMenuItem());
 
     }
-
 
     private MenuItem createSinglePDFMenuItem() {
         MenuItem singlePDFMenuItem = new MenuItem("Skapa PDF");
@@ -297,11 +293,16 @@ public class SummaryViewController extends AbstractViewController {
         return singlePDFMenuItem;
     }
 
+
     private boolean isSecondaryButton(MouseEvent mouseEvent) {
         return mouseEvent.getButton() == MouseButton.SECONDARY;
     }
 
     private boolean notEmptyListView() {
         return invoiceRecieverListView.getItems().size() > 0;
+    }
+
+    private boolean dataIsCollected() {
+        return currentSummaryMap != null;
     }
 }

@@ -36,6 +36,11 @@
                               <MenuItem mnemonicParsing="false" onAction="#handleDeleteAccount" text="Kostnadsställe" />
                           </items>
                         </Menu>
+                        <Menu mnemonicParsing="false" text="Ändra">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#handleChangeInvoiceReciever" text="Fakturamottagare" />
+                          </items>
+                        </Menu>
                      </items>
                       </Menu>
                       <Menu mnemonicParsing="false" text="Hjälp">

@@ -31,16 +31,15 @@ public class DeleteAccountPopupViewController extends AbstractPopupViewViewContr
     private void handleDeleteButtonClicked() {
 
         String selectedAccount = accountListView.getSelectionModel().getSelectedItem();
+
         if (isValidChlice(selectedAccount)) {
 
             try {
                 List<String> newAccounts = getMainController().deleteAccount(selectedAccount);
-                UpdateEvent<List<String>> updateEvent = new AccountUpdateEvent(newAccounts);
+
+                this.notfyObservers(new AccountUpdateEvent(newAccounts));
 
                 Util.showAlert("Följande godskategori togs bort", selectedAccount.toUpperCase(), Alert.AlertType.CONFIRMATION);
-
-                for (Observer observer : getObservers())
-                    observer.update(updateEvent);
 
                 this.getStage().close();
 

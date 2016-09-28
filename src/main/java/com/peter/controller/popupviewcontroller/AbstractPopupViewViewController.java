@@ -4,6 +4,7 @@ import com.peter.controller.InitializableControllee;
 import com.peter.controller.maincontroller.MainController;
 import com.peter.controller.observ.ObservableViewController;
 import com.peter.controller.observ.Observer;
+import com.peter.controller.observ.UpdateEvent;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -46,5 +47,10 @@ public abstract class AbstractPopupViewViewController implements ObservableViewC
     @Override
     public void addObserver(Observer observer) {
         observers.add(observer);
+    }
+
+    public void notfyObservers(UpdateEvent event){
+        for (Observer observer : observers)
+            observer.update(event);
     }
 }

@@ -37,12 +37,8 @@ public class AddAccountPopupViewController extends AbstractPopupViewViewControll
 
             try {
                 List<String> newAccounts = this.getMainController().addAccount(account);
-                UpdateEvent updateEvent = new AccountUpdateEvent(newAccounts);
 
-                for (Observer observer : this.getObservers()) {
-                    observer.update(updateEvent);
-                }
-
+                this.notfyObservers(new AccountUpdateEvent(newAccounts));
                 this.getStage().close();
 
             } catch (SQLException e) {

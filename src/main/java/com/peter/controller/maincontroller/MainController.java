@@ -1,5 +1,6 @@
 package com.peter.controller.maincontroller;
 
+import com.peter.dto.ChangebleInvoiceRecieverAttrs;
 import com.peter.dto.OrderDTO;
 import com.peter.dto.OrderSummaryDTO;
 import com.peter.exceptions.NonValidDirectoryException;
@@ -74,6 +75,12 @@ public class MainController {
 
     }
 
+    public ChangebleInvoiceRecieverAttrs getChangebleInvoiceRecieverAttrs(String invoiceReciver) {
+
+        return dataManager.getChangebleInvoiceRecieverAttrs(invoiceReciver);
+
+    }
+
     public int sendNewEntry(OrderDTO orderEntryDTO) throws SQLException {
         return dataManager.sendNewEntry(orderEntryDTO);
     }
@@ -137,10 +144,12 @@ public class MainController {
 
     public void generatePDFs(File directory, Map<String, OrderSummaryDTO> currentSummaryMap) throws FileNotFoundException, NonValidDirectoryException {
         pdfManager.createPDFs(directory, currentSummaryMap);
+        dataManager.pdfsCreated(currentSummaryMap, LocalDate.now());
     }
 
     public void generatePDF(File directory, OrderSummaryDTO summaryDTO) throws FileNotFoundException, NonValidDirectoryException {
         pdfManager.createSinglePDF(directory, summaryDTO);
+        dataManager.pdfCreated(summaryDTO, LocalDate.now());
     }
 
     public void mailPDFs(File[] pdfFiles) throws WrongFilenameFormatException {
@@ -150,6 +159,10 @@ public class MainController {
 
     public void addMailManagerObserver(Observer observer) {
         mailManager.addObserver(observer);
+    }
+
+    public List<String> updateInvoiceReciever(String selectedReciever, ChangebleInvoiceRecieverAttrs attrs) throws SQLException {
+        return dataManager.updateInvoiceReciever(selectedReciever, attrs);
     }
 
 

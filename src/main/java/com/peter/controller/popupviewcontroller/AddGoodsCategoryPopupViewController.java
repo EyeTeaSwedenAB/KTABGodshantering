@@ -42,12 +42,9 @@ public class AddGoodsCategoryPopupViewController extends AbstractPopupViewViewCo
 
             try {
                 double price = Double.parseDouble(unitPrice);
-                List<String> newGoodsCategories = newGoodsCategories = this.getMainController().addGoodsCategory(goodsCategory, price);
+                List<String> newGoodsCategories = this.getMainController().addGoodsCategory(goodsCategory, price);
 
-                for (Observer observer : this.getObservers()) {
-                    UpdateEvent<List<String>> updateEvent = new GoodsCategoryUpdateEvent(newGoodsCategories);
-                    observer.update(updateEvent);
-                }
+                this.notfyObservers(new GoodsCategoryUpdateEvent(newGoodsCategories));
 
                 this.getStage().close();
 

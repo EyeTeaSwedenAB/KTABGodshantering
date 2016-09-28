@@ -1,6 +1,8 @@
 package com.peter.model.data;
 
+import com.peter.dto.ChangebleInvoiceRecieverAttrs;
 import com.peter.dto.OrderDTO;
+import com.peter.dto.OrderSummaryDTO;
 import com.peter.integration.database.DatafetcherDAO;
 import com.peter.integration.integrationrequirements.Credentials;
 
@@ -26,9 +28,6 @@ public class DataManager {
     private Map<GoodsCategory, Integer> goodsCategoryToIdMap = new HashMap<>();
     private Map<InvoiceReciever, Integer> invoiceRecieverToIdMap = new HashMap<>();
 
-
-    private List<OrderDTO> orderDTOs = new ArrayList<>();
-    private OrderDTO orderDTO;
 
     public DataManager() {
         datafetcherDAO = DatafetcherDAO.getNewInstance();
@@ -80,6 +79,13 @@ public class DataManager {
         return updateInvoiceRecieveMaps(invoiceRecievers);
     }
 
+    public ChangebleInvoiceRecieverAttrs getChangebleInvoiceRecieverAttrs(String invoiceReciver) {
+        InvoiceReciever reciever = nameToInvoiceRecieverMap.get(invoiceReciver);
+        return new ChangebleInvoiceRecieverAttrs(reciever.getAddress(), reciever.getContact(), reciever.getPhone(), reciever.getEmail());
+
+    }
+
+
     public List<OrderDTO> getOrders(int limit) throws SQLException {
 
         return datafetcherDAO.fetchOrders(limit);
@@ -95,16 +101,17 @@ public class DataManager {
         return datafetcherDAO.fetchOrders(start.toString(), end.toString());
     }
 
-    public Map<String, InvoiceReciever> getNameToInvoiceRecieverMap(){
+
+    public Map<String, InvoiceReciever> getNameToInvoiceRecieverMap() {
         return this.nameToInvoiceRecieverMap;
     }
-
 
     public int sendNewEntry(OrderDTO orderDTO) throws SQLException {
 
         RawOrderData rawOrderData = convertToRawOrderData(orderDTO);
         return datafetcherDAO.sendNewEntry(rawOrderData);
     }
+
 
     public double getUnitPrice(String goodsCategory) {
 
@@ -114,16 +121,29 @@ public class DataManager {
         return g.getUnitPrice();
     }
 
-
     public int deleteLastEntry() throws SQLException {
         return datafetcherDAO.deleteLastEntry();
     }
+
 
     public List<String> addNewInvoiceReciever(String company, String address, String contact, String phone, String email) throws SQLException {
         InvoiceReciever invoiceReciever = new InvoiceReciever(0, company, address, contact, phone, email);
         datafetcherDAO.addInvoiceReciever(invoiceReciever);
         List<InvoiceReciever> newInvoiceRecivers = datafetcherDAO.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(newInvoiceRecivers);
+    }
+
+    public List<String> updateInvoiceReciever(String selectedReciever, ChangebleInvoiceRecieverAttrs attrs) throws SQLException {
+        InvoiceReciever reciever = nameToInvoiceRecieverMap.get(selectedReciever);
+        reciever.setAddress(attrs.getAddress());
+        reciever.setContact(attrs.getContact());
+        reciever.setPhone(attrs.getPhone());
+        reciever.setEmail(attrs.getEmail());
+
+        datafetcherDAO.updateInvoiceReciever(reciever);
+        List<InvoiceReciever> newinvoiceRecievers = datafetcherDAO.getAllInvoiceRecievers();
+        return updateInvoiceRecieveMaps(newinvoiceRecievers);
+
     }
 
 
@@ -135,7 +155,6 @@ public class DataManager {
 
     }
 
-
     public List<String> addGoodsGategory(String goodsCategory, double unitPrice) throws SQLException {
 
         GoodsCategory category = new GoodsCategory(0, goodsCategory, unitPrice);
@@ -144,6 +163,7 @@ public class DataManager {
         return updateGoodsCategorysMaps(newGoodsCategories);
     }
 
+
     public List<String> deleteInvoiceReciever(String selectedInvoiceReciever) throws SQLException {
 
         InvoiceReciever invoiceReciever = nameToInvoiceRecieverMap.get(selectedInvoiceReciever);
@@ -151,7 +171,6 @@ public class DataManager {
         List<InvoiceReciever> newInvoiceRecievers = datafetcherDAO.getAllInvoiceRecievers();
         return updateInvoiceRecieveMaps(newInvoiceRecievers);
     }
-
 
     public List<String> deleteGoodsCategory(String selectedGoodsCategory) throws SQLException {
 
@@ -171,12 +190,12 @@ public class DataManager {
         return updateAccountMaps(newAccounts);
     }
 
+
     public int deleteEntry(OrderDTO selectedRow) throws SQLException {
         return datafetcherDAO.deleteEntry(selectedRow);
     }
 
-
-    public String resolveEmail(String invoicereciver){
+    public String resolveEmail(String invoicereciver) {
         return nameToInvoiceRecieverMap.get(invoicereciver).getEmail();
     }
 
@@ -229,8 +248,8 @@ public class DataManager {
         return accountsAsStrings;
     }
 
+
     private RawOrderData convertToRawOrderData(OrderDTO orderDTO) {
-        this.orderDTO = orderDTO;
 
         String date = orderDTO.getDate();
         int invoiceID = nameToInvoiceRecieverMap.get(orderDTO.getInvoiceReciever()).getId();
@@ -243,6 +262,17 @@ public class DataManager {
 
         return new RawOrderData(0, date, invoiceID, accountID, goodsCatID, noOfUnits, totalPrice, comment, invoiceSent);
 
+    }
+
+
+    public void pdfsCreated(Map<String, OrderSummaryDTO> currentSummaryMap, LocalDate date) {
+
+        // TODO: 2016-09-28 Implement "pdfsCreated"
+    }
+
+    public void pdfCreated(OrderSummaryDTO summaryDTO, LocalDate date) {
+
+        // TODO: 2016-09-28 Implement "pdfCreated"
     }
 
 

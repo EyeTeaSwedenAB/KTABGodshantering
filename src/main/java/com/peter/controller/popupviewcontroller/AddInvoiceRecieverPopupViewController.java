@@ -2,8 +2,6 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
 import com.peter.controller.observ.InvoiceRecieverUpdateEvent;
-import com.peter.controller.observ.Observer;
-import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
@@ -32,7 +30,6 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
     private TextField emailTextfield;
 
 
-
     @Override
     public void init() {
 
@@ -52,10 +49,7 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
             try {
                 List<String> newInvoiceRecevers = this.getMainController().addNewInvoiceReciever(company, address, contact, phone, email);
 
-                for (Observer observer : this.getObservers()) {
-                    UpdateEvent<List<String>> updateEvent = new InvoiceRecieverUpdateEvent(newInvoiceRecevers);
-                    observer.update(updateEvent);
-                }
+                this.notfyObservers(new InvoiceRecieverUpdateEvent(newInvoiceRecevers));
                 this.getStage().close();
 
             } catch (SQLException e) {
@@ -69,13 +63,14 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
 
 
     }
+
     @FXML
-    private void handleCancelButtonClicked(){
+    private void handleCancelButtonClicked() {
         this.getStage().close();
     }
 
 
-    private boolean isValidInput(String company, String address, String contact, String phone, String email){
+    private boolean isValidInput(String company, String address, String contact, String phone, String email) {
 //        return company.length() != 0 && address.length() != 0 && contact.length() != 0 && phone.length() != 0;
         return company.length() != 0;
     }

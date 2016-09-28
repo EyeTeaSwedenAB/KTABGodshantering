@@ -2,8 +2,6 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
 import com.peter.controller.observ.GoodsCategoryUpdateEvent;
-import com.peter.controller.observ.UpdateEvent;
-import com.peter.controller.observ.Observer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
@@ -34,15 +32,11 @@ public class DeleteGoodsCategoryPopupViewController extends AbstractPopupViewVie
         if (isValidChoice(selectedGoodsCategory)) {
 
             try {
+
                 List<String> newGoodsCategories = getMainController().deleteGoodsCategory(selectedGoodsCategory);
-
-                UpdateEvent<List<String>> updateEvent = new GoodsCategoryUpdateEvent(newGoodsCategories);
-                for (Observer observer : getObservers())
-                    observer.update(updateEvent);
-
+                this.notfyObservers(new GoodsCategoryUpdateEvent(newGoodsCategories));
                 Util.showAlert("Följande godskategori togs bort", selectedGoodsCategory.toUpperCase(), Alert.AlertType.CONFIRMATION);
                 this.getStage().close();
-
 
             } catch (SQLException e) {
                 e.printStackTrace();

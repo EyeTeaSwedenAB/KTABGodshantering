@@ -2,8 +2,6 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
 import com.peter.controller.observ.InvoiceRecieverUpdateEvent;
-import com.peter.controller.observ.Observer;
-import com.peter.controller.observ.UpdateEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
@@ -33,12 +31,7 @@ public class DeleteInvoiceRecieverPopupViewController extends AbstractPopupViewV
             try {
 
                 List<String> newInvoiceRecievers = this.getMainController().deleteInvoiceReciever(selectedInvoiceReciever);
-                UpdateEvent updateEvent = new InvoiceRecieverUpdateEvent(newInvoiceRecievers);
-
-                for (Observer observer : this.getObservers()) {
-                    observer.update(updateEvent);
-                }
-
+                this.notfyObservers(new InvoiceRecieverUpdateEvent(newInvoiceRecievers));
                 Util.showAlert("Följande Fakturamottagare togs bort", selectedInvoiceReciever.toUpperCase(), Alert.AlertType.CONFIRMATION);
                 this.getStage().close();
 

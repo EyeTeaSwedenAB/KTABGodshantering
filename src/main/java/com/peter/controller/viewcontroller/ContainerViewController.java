@@ -85,6 +85,15 @@ public class ContainerViewController extends AbstractViewController implements O
     }
 
     @FXML
+    private void handleChangeInvoiceReciever(){
+        try {
+            showPopup("/fxml/popup/EditInvoiceReciever.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void handleAdd(){
         getMainApp().changeView("inputView");
     }

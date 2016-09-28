@@ -202,8 +202,21 @@ class DatafetcherDAOImpl extends DatafetcherDAO {
         int rowsAffected = globalPrepStmt.executeUpdate();
         closeGlobalResources();
         return rowsAffected;
+    }
 
-
+    @Override
+    public int updateInvoiceReciever(InvoiceReciever reciever) throws SQLException {
+        String sql = "UPDATE " + Table.INVOICE_RECIEVERS + " SET adress = ?, contact = ?, phone = ?, email = ? WHERE id = ?";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setString(1, reciever.getAddress());
+        globalPrepStmt.setString(2, reciever.getContact());
+        globalPrepStmt.setString(3, reciever.getPhone());
+        globalPrepStmt.setString(4, reciever.getEmail());
+        globalPrepStmt.setInt(5, reciever.getId());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
     }
 
     @Override
