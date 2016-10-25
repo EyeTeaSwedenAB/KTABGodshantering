@@ -2,8 +2,6 @@ package com.peter.controller.popupviewcontroller;
 
 import com.peter.controller.Util;
 import com.peter.controller.observ.InvoiceRecieverUpdateEvent;
-import com.peter.controller.observ.Observer;
-import com.peter.controller.observ.UpdateEvent;
 import com.peter.dto.ChangebleInvoiceRecieverAttrs;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -68,7 +66,9 @@ public class EditInvoiceRecieverPopupViewController extends AbstractPopupViewVie
             }
 
         } else {
-            Util.showAlert("Meddelande", "Inga fält får vara tomma, En riktig E-postaddress måste användas", Alert.AlertType.INFORMATION);
+            Util.showAlert("Meddelande", "Inga fält får vara tomma,\n" +
+                    " En riktig E-postaddress måste användas.\n" +
+                    "Om ingen epost-address finns skall fältet markeras N/A", Alert.AlertType.INFORMATION);
         }
 
     }
@@ -148,7 +148,7 @@ public class EditInvoiceRecieverPopupViewController extends AbstractPopupViewVie
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        return matcher.matches() || email.equalsIgnoreCase("N/A");
     }
 
 

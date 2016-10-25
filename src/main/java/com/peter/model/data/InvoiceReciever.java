@@ -12,8 +12,6 @@ public class InvoiceReciever {
     private String phone;
     private String email;
 
-    public InvoiceReciever() {
-    }
 
     public InvoiceReciever(int id, String company, String address, String contact, String phone, String email) {
         this.id = id;
@@ -73,7 +71,14 @@ public class InvoiceReciever {
     }
 
     public boolean hasRegisteredMail(){
-        return this.email != "";
+
+        if (this.email.equalsIgnoreCase(""))
+            return false;
+
+        if (this.email.equalsIgnoreCase("N/A"))
+            return false;
+
+        return true;
     }
     @Override
     public String toString() {

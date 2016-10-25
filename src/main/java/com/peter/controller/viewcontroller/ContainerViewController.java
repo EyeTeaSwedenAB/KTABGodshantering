@@ -4,6 +4,7 @@ import com.peter.controller.popupviewcontroller.AbstractPopupViewViewController;
 import com.peter.controller.observ.Observer;
 import com.peter.controller.observ.ObservableViewController;
 import com.peter.controller.observ.UpdateEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -40,6 +41,7 @@ public class ContainerViewController extends AbstractViewController implements O
     @FXML
     private void handleAddGoodsCategory() {
         try {
+
             showPopup("/fxml/popup/AddGoodsCategoryPopup.fxml");
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,6 +108,11 @@ public class ContainerViewController extends AbstractViewController implements O
     @FXML
     private void handleShowStats(){
         getMainApp().changeView("statsView");
+    }
+
+    @FXML
+    private void handleClose(){
+        Platform.exit();
     }
 
 

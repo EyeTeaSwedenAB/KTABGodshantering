@@ -28,11 +28,14 @@ public class MailManager extends Observable {
 
             @Override
             protected Void call() throws Exception {
-//                Map<String, File> emailToFileMap = mailAddressResolver.resolve(files, invoiceRecieverMap);
-//
-//                for (String emailAdress : emailToFileMap.keySet())
-//                    sendSingleMail(emailAdress, emailToFileMap.get(emailAdress));
-                Thread.currentThread().sleep(3000);
+
+                Map<String, File> emailToFileMap = mailAddressResolver.resolve(files, invoiceRecieverMap);
+
+                for (String emailAdress : emailToFileMap.keySet()) {
+                    sendSingleMail(emailAdress, emailToFileMap.get(emailAdress));
+
+                }
+
                 return null;
             }
 

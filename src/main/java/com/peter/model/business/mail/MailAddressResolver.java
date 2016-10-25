@@ -22,6 +22,7 @@ class MailAddressResolver {
 
         Map<String, File> emailToFilesMap = new HashMap<>();
 
+
         for (File file : pdfFiles) {
 
             if (file.getAbsolutePath().endsWith(".pdf")) {
@@ -31,6 +32,7 @@ class MailAddressResolver {
                 if (invoiceRecieversMap.containsKey(invoiceReciverName)) {
 
                     InvoiceReciever reciever = invoiceRecieversMap.get(invoiceReciverName);
+
 
                     if (reciever.hasRegisteredMail()) {
                         String email = reciever.getEmail();

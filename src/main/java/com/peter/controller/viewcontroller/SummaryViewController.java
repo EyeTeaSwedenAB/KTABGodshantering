@@ -127,9 +127,9 @@ public class SummaryViewController extends AbstractViewController {
 
             ordersTableView.getItems().clear();
             ordersTableView.getItems().addAll(monthlyOrders);
-            infoLabel.setText("Ordrar för -" + newValue + "- under -" + monthCombobox.getValue() + "-");
+            infoLabel.setText("Ordrar för: " + newValue + ", " + monthCombobox.getValue());
 
-            totalLabel.setText("Totalt att fakturera: " + Double.toString(orderSummaryDTO.getMonthlyDueAmount()) + " kr.");
+            totalLabel.setText("Totalt att fakturera: " + Double.toString(orderSummaryDTO.getMonthlyDueAmount()) + " kr");
 
         });
 

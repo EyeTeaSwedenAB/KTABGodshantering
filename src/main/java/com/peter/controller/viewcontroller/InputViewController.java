@@ -120,6 +120,7 @@ public class InputViewController extends AbstractViewController implements Obser
         OrderDTO newOrderDTO = null;
 
         if (isValidInputFields()) {
+
             if (!currentTask.isRunning()) {
 
                 currentTask = taskCreator.getSendNewEntryAndUpdateTask();
@@ -177,8 +178,6 @@ public class InputViewController extends AbstractViewController implements Obser
         } else
             Util.showAlert("Felaktigt val", "Du måste välja en rad arr ta bort först", Alert.AlertType.INFORMATION);
     }
-
-
 
 
     private boolean isValidInputFields() {

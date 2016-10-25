@@ -18,13 +18,13 @@ import java.util.Properties;
  */
 class Mailer extends Observable {
 
-    private final String SENDER = "info@karingoetrafiken.com";
+    private final String SENDER = "godsterminalen.ktab@gmail.com";
 
     boolean mail(String email, File file) {
 
 
-        final String username = "peter.boberg@gmail.com";
-        final String password = "PetBob82";
+        final String username = "godsterminalen.ktab@gmail.com";
+        final String password = "Karingotrafiken";
         final String smtpHost = "smtp.gmail.com";
 
         Properties props = new Properties();
@@ -33,6 +33,7 @@ class Mailer extends Observable {
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", smtpHost);
         props.put("mail.smtp.port", "587");
+
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
