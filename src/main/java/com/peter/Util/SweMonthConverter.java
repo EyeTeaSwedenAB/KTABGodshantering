@@ -46,8 +46,9 @@ public class SweMonthConverter {
 
         else if (month == Month.DECEMBER)
             return SwedishMonth.DECEMBER;
-
         else
             return null;
+
+
     }
 }

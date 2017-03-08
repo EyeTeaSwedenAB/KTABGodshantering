@@ -29,12 +29,10 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
     @FXML
     private TextField emailTextfield;
 
-
     @Override
     public void init() {
 
     }
-
 
     @FXML
     private void handleAddButtonClicked() {
@@ -58,10 +56,10 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
             }
         } else {
 
-            Util.showAlert("Felaktig inmatning", "Samtliga fält måste vara ifyllda", Alert.AlertType.WARNING);
+            Util.showAlert("Felaktig inmatning", "Fakuramottagare får inte vara tom eller innehålla tecknet \"/\" \n\n" +
+                    "Övriga fält ska anges som \"N/A\" ifall denna info inte skall läggas in nu.", Alert.AlertType.WARNING);
+
         }
-
-
     }
 
     @FXML
@@ -71,8 +69,8 @@ public class AddInvoiceRecieverPopupViewController extends AbstractPopupViewView
 
 
     private boolean isValidInput(String company, String address, String contact, String phone, String email) {
-//        return company.length() != 0 && address.length() != 0 && contact.length() != 0 && phone.length() != 0;
-        return company.length() != 0;
+        return company.length() != 0 && address.length() != 0 && contact.length() != 0
+                && phone.length() != 0 && email.length() != 0 && !company.contains("/");
     }
 
 }

@@ -133,7 +133,6 @@ public class SummaryViewController extends AbstractViewController {
 
         });
 
-
     }
 
 
@@ -145,7 +144,12 @@ public class SummaryViewController extends AbstractViewController {
 
         Year year = yearCombobox.getValue();
         Month month = monthCombobox.getValue();
-        int lastDayOfmonth = month.maxLength();
+        int lastDayOfmonth;
+
+        if (isFebruaryAndNotLeapYear(year, month)) {
+            lastDayOfmonth = month.maxLength() - 1;
+        } else
+            lastDayOfmonth = month.maxLength();
 
         LocalDate start = LocalDate.of(year.getValue(), month, 1);
         LocalDate end = LocalDate.of(year.getValue(), month, lastDayOfmonth);
@@ -164,7 +168,6 @@ public class SummaryViewController extends AbstractViewController {
             e.printStackTrace();
             Util.showAlert("Ett fel uppstod", "Kunde inte kommnicera med databasen just nu", Alert.AlertType.ERROR);
         }
-
 
     }
 
@@ -185,7 +188,6 @@ public class SummaryViewController extends AbstractViewController {
         } else
             Util.showAlert("Ett fel uppstod", "Du har inte hämtat någon data att exportera", Alert.AlertType.ERROR);
     }
-
 
     @FXML
     private File handleGeneratePDFButtonClicked() {
@@ -216,12 +218,13 @@ public class SummaryViewController extends AbstractViewController {
         return null;
     }
 
+
     @FXML
     private void handleGeneratePDFsAndMailAllButtonClicked() {
 
         File chosenDirectory = handleGeneratePDFButtonClicked();
 
-        if (chosenDirectory != null){
+        if (chosenDirectory != null) {
 
             try {
                 getMainController().mailPDFs(chosenDirectory.listFiles());
@@ -231,13 +234,11 @@ public class SummaryViewController extends AbstractViewController {
                 System.out.println(e.getMessage());
                 System.out.println(e.getWrongFile().toString());
             }
-        }
-        else{
+        } else {
 
             // What to do if cancel button clicked
         }
     }
-
 
     @FXML
     private void handleListViewClicked(MouseEvent mouseEvent) {
@@ -254,12 +255,12 @@ public class SummaryViewController extends AbstractViewController {
     }
 
 
-
     private void buildContextMenu() {
         contextMenu = new ContextMenu();
         contextMenu.getItems().add(createSinglePDFMenuItem());
 
     }
+
 
     private MenuItem createSinglePDFMenuItem() {
         MenuItem singlePDFMenuItem = new MenuItem("Skapa PDF");
@@ -293,10 +294,10 @@ public class SummaryViewController extends AbstractViewController {
         return singlePDFMenuItem;
     }
 
-
     private boolean isSecondaryButton(MouseEvent mouseEvent) {
         return mouseEvent.getButton() == MouseButton.SECONDARY;
     }
+
 
     private boolean notEmptyListView() {
         return invoiceRecieverListView.getItems().size() > 0;
@@ -304,5 +305,10 @@ public class SummaryViewController extends AbstractViewController {
 
     private boolean dataIsCollected() {
         return currentSummaryMap != null;
+    }
+
+    private boolean isFebruaryAndNotLeapYear(Year year, Month month) {
+
+        return month == Month.FEBRUARY && !year.isLeap();
     }
 }
