@@ -1,9 +1,9 @@
 package com.peter.controller.viewcontroller;
 
-import com.peter.controller.popupviewcontroller.AbstractPopupViewViewController;
-import com.peter.controller.observ.Observer;
 import com.peter.controller.observ.ObservableViewController;
+import com.peter.controller.observ.Observer;
 import com.peter.controller.observ.UpdateEvent;
+import com.peter.controller.popupviewcontroller.AbstractPopupViewViewController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,7 +59,7 @@ public class ContainerViewController extends AbstractViewController implements O
     }
 
     @FXML
-    private void handleDeleteInvoiceReciever(){
+    private void handleDeleteInvoiceReciever() {
 
         try {
             showPopup("/fxml/popup/DeleteInvoiceRecieverPopup.fxml");
@@ -69,7 +69,7 @@ public class ContainerViewController extends AbstractViewController implements O
     }
 
     @FXML
-    private void handleDeleteGoodsCategory(){
+    private void handleDeleteGoodsCategory() {
         try {
             showPopup("/fxml/popup/DeleteGoodsCategoryPopup.fxml");
         } catch (IOException e) {
@@ -78,7 +78,7 @@ public class ContainerViewController extends AbstractViewController implements O
     }
 
     @FXML
-    private void handleDeleteAccount(){
+    private void handleDeleteAccount() {
         try {
             showPopup("/fxml/popup/DeleteAccountPopup.fxml");
         } catch (IOException e) {
@@ -87,7 +87,7 @@ public class ContainerViewController extends AbstractViewController implements O
     }
 
     @FXML
-    private void handleChangeInvoiceReciever(){
+    private void handleChangeInvoiceReciever() {
         try {
             showPopup("/fxml/popup/EditInvoiceReciever.fxml");
         } catch (IOException e) {
@@ -96,22 +96,32 @@ public class ContainerViewController extends AbstractViewController implements O
     }
 
     @FXML
-    private void handleAdd(){
+    private void handleChangeGoodsCategory() {
+        try {
+            showPopup("/fxml/popup/EditGoodsCategory.fxml");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAdd() {
         getMainApp().changeView("inputView");
     }
 
     @FXML
-    private void handleShowSummary(){
+    private void handleShowSummary() {
         getMainApp().changeView("summaryView");
     }
 
     @FXML
-    private void handleShowStats(){
+    private void handleShowStats() {
         getMainApp().changeView("statsView");
     }
 
     @FXML
-    private void handleClose(){
+    private void handleClose() {
         Platform.exit();
     }
 

@@ -62,4 +62,6 @@ public abstract class DatafetcherDAO {
     public abstract int deleteEntry(OrderDTO selectedRow) throws SQLException;
 
     public abstract int updateInvoiceReciever(InvoiceReciever reciever) throws SQLException;
+
+    public abstract int updateGoodscategory(GoodsCategory goodsCategory) throws SQLException;
 }

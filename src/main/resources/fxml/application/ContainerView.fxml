@@ -36,6 +36,7 @@
                         <Menu mnemonicParsing="false" text="Ändra">
                           <items>
                             <MenuItem mnemonicParsing="false" onAction="#handleChangeInvoiceReciever" text="Fakturamottagare" />
+                              <MenuItem mnemonicParsing="false" onAction="#handleChangeGoodsCategory" text="Godskategori" />
                           </items>
                         </Menu>
                      </items>

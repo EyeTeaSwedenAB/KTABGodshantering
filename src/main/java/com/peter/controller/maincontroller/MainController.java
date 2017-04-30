@@ -165,6 +165,10 @@ public class MainController {
         return dataManager.updateInvoiceReciever(selectedReciever, attrs);
     }
 
+    public List<String> updateGoodsCategory(String selectedCategory, double newUnitPrice) throws SQLException {
+        return dataManager.updateGoodsCategory(selectedCategory, newUnitPrice);
+    }
+
 
     // PRIVATE DOMAIN
     ///////////////////////////////////////////////////////////////////////////////

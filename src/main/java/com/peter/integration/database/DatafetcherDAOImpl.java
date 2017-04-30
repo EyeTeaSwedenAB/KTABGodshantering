@@ -220,6 +220,20 @@ class DatafetcherDAOImpl extends DatafetcherDAO {
     }
 
     @Override
+    public int updateGoodscategory(GoodsCategory goodsCategory) throws SQLException {
+        String sql = "UPDATE " + Table.GOODS_CATEGORIES + " SET unitprice = ? WHERE id = ?";
+        openGlobalRecources();
+        globalPrepStmt = globalConnection.prepareStatement(sql);
+        globalPrepStmt.setDouble(1, goodsCategory.getUnitPrice());
+        globalPrepStmt.setInt(2, goodsCategory.getId());
+        int rowsAffected = globalPrepStmt.executeUpdate();
+        closeGlobalResources();
+        return rowsAffected;
+
+
+    }
+
+    @Override
     public int addGoodsCategory(GoodsCategory goodsCategory) throws SQLException {
         String sql = "INSERT INTO " + Table.GOODS_CATEGORIES + " (category, unitprice) VALUES (?, ?)";
         openGlobalRecources();

@@ -146,6 +146,16 @@ public class DataManager {
 
     }
 
+    public List<String> updateGoodsCategory(String selectedCategory, double newUnitPrice) throws SQLException {
+        GoodsCategory goodsCategory = nameToGoodsCategoryMap.get(selectedCategory);
+        goodsCategory.setUnitPrice(newUnitPrice);
+        datafetcherDAO.updateGoodscategory(goodsCategory);
+        List<GoodsCategory> newGoodsCategories = datafetcherDAO.getAllGoodsCategories();
+        return updateGoodsCategorysMaps(newGoodsCategories);
+
+
+    }
+
 
     public List<String> addAccount(String accountName) throws SQLException {
         Account account = new Account(0, accountName);
@@ -274,6 +284,7 @@ public class DataManager {
 
         // TODO: 2016-09-28 Implement "pdfCreated"
     }
+
 
 
 }
