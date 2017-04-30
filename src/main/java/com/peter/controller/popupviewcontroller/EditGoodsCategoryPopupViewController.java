@@ -24,7 +24,6 @@ public class EditGoodsCategoryPopupViewController extends AbstractPopupViewViewC
     public TextField unitpriceTextfield;
 
 
-    private boolean valueChanged = false;
 
 
     @Override
@@ -42,9 +41,6 @@ public class EditGoodsCategoryPopupViewController extends AbstractPopupViewViewC
             unitpriceTextfield.setText(Double.toString(unitPrice));
         });
 
-        unitpriceTextfield.textProperty().addListener((observable, oldValue, newValue) -> {
-            valueChanged = true;
-        });
     }
 
 
