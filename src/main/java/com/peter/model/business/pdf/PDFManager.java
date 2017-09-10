@@ -71,7 +71,6 @@ public class PDFManager {
         addFooters(summaryDTO, table);
 
         document.add(table);
-        drawLine(pdfDocument, lineStartX, yCoord, lineEndX, yCoord);
         document.close();
 
         return this;
@@ -123,7 +122,7 @@ public class PDFManager {
 
 
     private void drawLine(PdfDocument pdfDocument, float startX, float startY, float endX, float endY) {
-        PdfCanvas canvas = new PdfCanvas(pdfDocument.getPage(1));
+        PdfCanvas canvas = new PdfCanvas(pdfDocument.getFirstPage());
 
         canvas.moveTo(startX, startY).lineTo(endX, endY).closePathFillStroke();
     }
