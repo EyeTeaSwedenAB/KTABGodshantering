@@ -83,7 +83,7 @@ public class MainApp extends Application implements Observer {
         notifyPreloader(new Preloader.ProgressNotification(0));
         mainController = new MainController();
         mainController.addMailManagerObserver(this);
-        mainController.setLoginInformation("jdbc:mysql://ktabgoods.cyzgfcxn1ubh.eu-central-1.rds.amazonaws.com:3306/KTABGoodsTest?autoReconnect=true&useSSL=false", "pebo0602", "PetBob82");
+        mainController.setLoginInformation("jdbc:mysql://db01.karingotrafiken.se:3306/KTABGoodsTest?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "ktab_goods", "ZDrctyA+5W/N0ll2");
 
         notifyPreloader(new Preloader.ProgressNotification(0.4));
         Thread.sleep(400);
