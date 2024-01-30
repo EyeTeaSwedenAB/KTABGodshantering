@@ -133,7 +133,7 @@ public class InputViewController extends AbstractViewController implements Obser
                 Util.showAlert("Lugn i stormen!", "Jag arbetar fortfarande med ditt senaste kommando", Alert.AlertType.INFORMATION);
 
         } else
-            Util.showAlert("Felinmatning", "Samtliga fält måte innehålla värden! \n\n" +
+            Util.showAlert("Felinmatning", "Samtliga fält måste innehålla värden! \n\n" +
                     "Fältet \"Á pris\" kan endast innehålla numeriska värden\n" +
                     "Fältet \"Antal\" måste vara större än 0", Alert.AlertType.ERROR);
 
@@ -176,7 +176,7 @@ public class InputViewController extends AbstractViewController implements Obser
                 showDefaultDatabaseErrorAlert();
             }
         } else
-            Util.showAlert("Felaktigt val", "Du måste välja en rad arr ta bort först", Alert.AlertType.INFORMATION);
+            Util.showAlert("Felaktigt val", "Du måste välja en rad att ta bort först", Alert.AlertType.INFORMATION);
     }
 
 
