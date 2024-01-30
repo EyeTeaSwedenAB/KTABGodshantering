@@ -89,14 +89,13 @@ public class SummaryViewController extends AbstractViewController {
 
     private void initTimeComboboxes() {
 
-        yearCombobox.getItems().add(Year.of(2016));
-        yearCombobox.getItems().add(Year.of(2017));
-        yearCombobox.getItems().add(Year.of(2018));
-        yearCombobox.getItems().add(Year.of(2019));
-        yearCombobox.getItems().add(Year.of(2020));
-        yearCombobox.getItems().add(Year.of(2021));
-        yearCombobox.getItems().add(Year.of(2022));
-        yearCombobox.getItems().add(Year.of(2023));
+        int startYear = 2016;
+        int currentYear = Year.now().getValue();
+        
+        for (int i = startYear; i <= currentYear; i++) {
+            yearCombobox.getItems().add(Year.of(i));
+        }
+
         yearCombobox.getSelectionModel().selectFirst();
 
         monthCombobox.getItems().addAll(Month.values());
