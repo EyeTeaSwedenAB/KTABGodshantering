@@ -32,7 +32,7 @@ public class ExcelPrinter {
         }
 
         int currentRow = 1;
-        currentRow = createSingleColumnFilledHeader("FAKURAUDERLAG", IndexedColors.YELLOW, (short) 24, currentRow, 0);
+        currentRow = createSingleColumnFilledHeader("FAKTURAUNDERLAG", IndexedColors.YELLOW, (short) 24, currentRow, 0);
 
         for (String key : orderSummaryDTOMap.keySet()) {
             currentRow = createSingleColumnFilledHeader(key, IndexedColors.BRIGHT_GREEN, (short) 16, currentRow + 1, 0);
