@@ -35,7 +35,6 @@ public class MainController {
 
         dataManager = new DataManager();
         summarizer = new Summarizer();
-        excelPrinter = new ExcelPrinter();
         pdfManager = new PDFManager();
         mailManager = new MailManager();
     }
@@ -139,6 +138,7 @@ public class MainController {
     }
 
     public void printToExcel(Map<String, OrderSummaryDTO> summaryMap, File file) throws IOException {
+        excelPrinter = new ExcelPrinter();
         excelPrinter.print(summaryMap, file);
     }
 
